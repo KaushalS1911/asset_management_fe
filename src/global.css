@@ -1,0 +1,54 @@
+/* scrollbar */
+@import 'simplebar-react/dist/simplebar.min.css';
+
+/* lazy image */
+@import 'react-lazy-load-image-component/src/effects/blur.css';
+
+/* map */
+@import 'mapbox-gl/dist/mapbox-gl.css';
+
+/* editor */
+@import 'react-quill/dist/quill.snow.css';
+
+/* carousel */
+@import 'slick-carousel/slick/slick.css';
+@import 'slick-carousel/slick/slick-theme.css';
+
+/* lightbox */
+@import 'yet-another-react-lightbox/styles.css';
+@import 'yet-another-react-lightbox/plugins/captions.css';
+@import 'yet-another-react-lightbox/plugins/thumbnails.css';
+
+
+#SvgjsG2493{
+  display: none !important;
+}
+#attendance table {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+#attendance table td,th {
+  border: 1px solid black;
+}
+.hide{
+  opacity: 0;
+}
+::-webkit-scrollbar {
+  width: 10px; /* Width of the entire scrollbar */
+  height: 10px; /* Height of the entire scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Color of the track */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #91919180; /* Color of the scrollbar thumb */
+  border-radius: 10px; /* Rounded corners */
+  border: 2px solid transparent; /* Space around the thumb */
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #91919180; /* Color of the thumb on hover */
+}

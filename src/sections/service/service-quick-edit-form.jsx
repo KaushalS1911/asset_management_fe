@@ -23,6 +23,7 @@ import Stack from '@mui/material/Stack';
 import { DatePicker } from '@mui/x-date-pickers';
 import axios from 'axios';
 import { paths } from '../../routes/paths';
+import { ASSETS_API_URL } from '../../config-global';
 
 // ----------------------------------------------------------------------
 
@@ -63,7 +64,7 @@ export default function ServiceQuickEditForm({ currentUser, open, onClose }) {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      axios.put(`https://asset-management-be-dkf8.onrender.com/service/${currentUser?._id}`,{...data}).then((res) => {
+      axios.put(`${ASSETS_API_URL}/service/${currentUser?._id}`,{...data}).then((res) => {
         if(res.status === 200){
           enqueueSnackbar(res.data.message)
           onClose()          // router.push(paths.dashboard.service.list)

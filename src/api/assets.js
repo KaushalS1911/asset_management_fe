@@ -2,11 +2,12 @@ import useSWR from 'swr';
 import { useMemo } from 'react';
 
 import { fetcher} from 'src/utils/axios';
+import { ASSETS_API_URL } from '../config-global';
 
 // ----------------------------------------------------------------------
 
 export function useGetAssete() {
-  const URL = 'https://asset-management-be-dkf8.onrender.com/asset';
+  const URL = `${ASSETS_API_URL}/asset`;
 
   const { data, isLoading, error, isValidating ,mutate} = useSWR(URL, fetcher);
 
@@ -25,7 +26,7 @@ export function useGetAssete() {
   return memoizedValue;
 }
 export function useGetSingleAssete(id) {
-  const URL = `https://asset-management-be-dkf8.onrender.com/asset/${id}`;
+  const URL = `${ASSETS_API_URL}/asset/${id}`;
 
   const { data, isLoading, error, isValidating,mutate } = useSWR(URL, fetcher);
 

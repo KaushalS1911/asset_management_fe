@@ -20,7 +20,7 @@ import Box from '@mui/material/Box';
 import { useGetAssete } from '../../api/assets';
 import { useGetSingleService } from '../../api/service';
 import {LoadingScreen} from "../../components/loading-screen";
-
+import { ASSETS_API_URL } from '../../config-global';
 // ----------------------------------------------------------------------
 
 
@@ -102,7 +102,7 @@ export default function ServiceNewEditForm({ expensesId,singleService }) {
 setLoading(true)
     try {
       if(expensesId){
-        axios.put(`https://asset-management-be-dkf8.onrender.com/service/${expensesId}`,{...data,asset:data.asset.value}).then((res) => {
+        axios.put(`${ASSETS_API_URL}/service/${expensesId}`,{...data,asset:data.asset.value}).then((res) => {
         if(res.status === 200){
           setLoading(false)
           enqueueSnackbar(res.data.message)
@@ -114,7 +114,7 @@ setLoading(true)
         })
 
       }else {
-      axios.post("https://asset-management-be-dkf8.onrender.com/service",{...data,asset:data.asset.value}).then((res) => {
+      axios.post(`${ASSETS_API_URL}/service`,{...data,asset:data.asset.value}).then((res) => {
         if(res.status === 201){
           setLoading(false)
           enqueueSnackbar(res.data.message)

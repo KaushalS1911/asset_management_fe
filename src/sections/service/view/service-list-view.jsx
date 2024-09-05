@@ -46,6 +46,7 @@ import ServiceTableToolbar from '../service-table-toolbar';
 import ServiceTableFiltersResult from '../service-table-filters-result';
 import { useGetService } from '../../../api/service';
 import {LoadingScreen} from "../../../components/loading-screen";
+import { ASSETS_API_URL } from '../../../config-global';
 
 // ----------------------------------------------------------------------
 
@@ -96,7 +97,7 @@ export default function ServiceListView() {
   const handleDeleteRow = useCallback(
     async (id) => {
       axios
-        .delete(`https://asset-management-be-dkf8.onrender.com/service/${id}`)
+        .delete(`${ASSETS_API_URL}/service/${id}`)
         .then((res) => {
           if (res) {
             mutate()

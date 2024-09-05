@@ -54,6 +54,7 @@ import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import { isAfter } from '../../../utils/format-time';
 import axios from 'axios';
+import { ASSETS_API_URL } from '../../../config-global';
 // import {
 //   RenderCellStock,
 //   RenderCellPrice,
@@ -168,7 +169,7 @@ export default function AssetsListView() {
   const handleDeleteRows = useCallback((id) => {
     // const deleteRows = tableData.filter((row) => !selectedRowIds.includes(row.id));
     axios
-      .delete(`https://asset-management-be-dkf8.onrender.com/asset/${id}`)
+      .delete(`${ASSETS_API_URL}/asset/${id}`)
       .then((res) => {
         if (res) {
           mutate()

@@ -2,11 +2,12 @@ import useSWR from 'swr';
 import { useMemo } from 'react';
 
 import { fetcher} from 'src/utils/axios';
+import { ASSETS_API_URL } from '../config-global';
 
 // ----------------------------------------------------------------------
 
 export function useGetService() {
-  const URL = 'https://asset-management-be-dkf8.onrender.com/service';
+  const URL = `${ASSETS_API_URL}/service`;
 
   const { data, isLoading, error, isValidating ,mutate} = useSWR(URL, fetcher);
 
@@ -25,7 +26,7 @@ export function useGetService() {
   return memoizedValue;
 }
 export function useGetSingleService(id) {
-  const URL = `https://asset-management-be-dkf8.onrender.com/service/${id}`;
+  const URL = `${ASSETS_API_URL}/service/${id}`;
 
   const { data, isLoading, error, isValidating,mutate } = useSWR(URL, fetcher);
 

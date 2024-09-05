@@ -48,6 +48,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { FormHelperText } from '@mui/material';
 import axios from 'axios';
 import {LoadingScreen} from "../../components/loading-screen";
+import { ASSETS_API_URL } from '../../config-global';
 
 // ----------------------------------------------------------------------
 
@@ -218,7 +219,7 @@ useEffect(() => {
 
     if(currentProduct){
     axios
-      .put(`https://asset-management-be-dkf8.onrender.com/asset/${currentProduct?._id}`, formData)
+      .put(`${ASSETS_API_URL}/asset/${currentProduct?._id}`, formData)
       .then((res) => {
         if (res) {
           mutate()
@@ -235,7 +236,7 @@ useEffect(() => {
     }else {
 
     axios
-      .post('https://asset-management-be-dkf8.onrender.com/asset', formData)
+      .post(`${ASSETS_API_URL}/asset`, formData)
       .then((res) => {
         if (res.status == 201) {
           setLoading(false)

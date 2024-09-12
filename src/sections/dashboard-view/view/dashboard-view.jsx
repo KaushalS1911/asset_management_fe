@@ -16,7 +16,6 @@ import {
   useGetDashboardData,
   useGetDemos,
 } from '../../../api/dashboard';
-import { useGetConfigs } from 'src/api/config';
 import { useGetVisitsOverview } from '../../../api/visit_overview';
 import { useGetInquiryOverview } from '../../../api/inquiry_overview';
 
@@ -33,7 +32,6 @@ export default function DashboardView() {
   const { dashboard } = useGetDashboardData();
   const { courses } = useGetCourses();
   const { attendance } = useGetAttendance();
-  const { configs } = useGetConfigs();
   const { visit } = useGetVisitsOverview();
   const { inquiry } = useGetInquiryOverview();
 
@@ -50,10 +48,8 @@ export default function DashboardView() {
     if (attendance) {
       setAttendence(attendance);
     }
-    if (configs && configs.classrooms) {
-      setLabs(configs.classrooms.length);
-    }
-  }, [demos, dashboard, courses, attendance, configs]);
+
+  }, [demos, dashboard, courses, attendance]);
 
   const output = [];
 

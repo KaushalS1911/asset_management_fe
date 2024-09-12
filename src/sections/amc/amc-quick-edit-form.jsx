@@ -24,13 +24,12 @@ import { DatePicker } from '@mui/x-date-pickers';
 import axios from 'axios';
 import { paths } from '../../routes/paths';
 import { ASSETS_API_URL } from '../../config-global';
-import { useAuthContext } from '../../auth/hooks';
 
 // ----------------------------------------------------------------------
 
-export default function ServiceQuickEditForm({ currentUser, open, onClose ,mutate}) {
+export default function AMCQuickEditForm({ currentUser, open, onClose }) {
   const { enqueueSnackbar } = useSnackbar();
-const {user} = useAuthContext()
+
   const NewUserSchema = Yup.object().shape({
     end_date: Yup.mixed().nullable().required('Enf date is required'),
     service_cost: Yup.number().required('Service cost is required'),
@@ -65,10 +64,9 @@ const {user} = useAuthContext()
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      axios.put(`${ASSETS_API_URL}/${user.data._id}/service/${currentUser?._id}`,{...data}).then((res) => {
+      axios.put(`${ASSETS_API_URL}/service/${currentUser?._id}`,{...data}).then((res) => {
         if(res.status === 200){
           enqueueSnackbar(res.data.message)
-          mutate()
           onClose()          // router.push(paths.dashboard.service.list)
         }
       }).catch((err) => enqueueSnackbar("Something want wrong",{variant:"error"}))
@@ -187,7 +185,7 @@ const {user} = useAuthContext()
   );
 }
 
-ServiceQuickEditForm.propTypes = {
+AMCQuickEditForm.propTypes = {
   open: PropTypes.bool,
   onClose: PropTypes.func,
   currentUser: PropTypes.object,

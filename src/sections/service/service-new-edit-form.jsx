@@ -21,6 +21,7 @@ import { useGetAssete } from '../../api/assets';
 import { useGetSingleService } from '../../api/service';
 import {LoadingScreen} from "../../components/loading-screen";
 import { ASSETS_API_URL } from '../../config-global';
+import { useAuthContext } from '../../auth/hooks';
 // ----------------------------------------------------------------------
 
 
@@ -31,6 +32,7 @@ export default function ServiceNewEditForm({ expensesId,singleService }) {
   const mdUp = useResponsive('up', 'md');
   const { enqueueSnackbar } = useSnackbar();
   const [assetName,setAssetName] = useState([])
+  const {user} = useAuthContext()
   // const, setTaskData] = useState([]);
 
   useEffect(() => {
@@ -102,7 +104,7 @@ export default function ServiceNewEditForm({ expensesId,singleService }) {
 setLoading(true)
     try {
       if(expensesId){
-        axios.put(`${ASSETS_API_URL}/service/${expensesId}`,{...data,asset:data.asset.value}).then((res) => {
+        axios.put(`${ASSETS_API_URL}/${user.data._id}/service/${expensesId}`,{...data,asset:data.asset.value}).then((res) => {
         if(res.status === 200){
           setLoading(false)
           enqueueSnackbar(res.data.message)
@@ -114,7 +116,7 @@ setLoading(true)
         })
 
       }else {
-      axios.post(`${ASSETS_API_URL}/service`,{...data,asset:data.asset.value}).then((res) => {
+      axios.post(`${ASSETS_API_URL}/${user.data._id}/service`,{...data,asset:data.asset.value}).then((res) => {
         if(res.status === 201){
           setLoading(false)
           enqueueSnackbar(res.data.message)

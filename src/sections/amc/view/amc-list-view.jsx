@@ -40,25 +40,23 @@ import {
   TableSelectedAction,
   TablePaginationCustom,
 } from 'src/components/table';
-
-import ServiceTableRow from '../service-table-row';
-import ServiceTableToolbar from '../service-table-toolbar';
-import ServiceTableFiltersResult from '../service-table-filters-result';
-import { useGetService } from '../../../api/service';
 import {LoadingScreen} from "../../../components/loading-screen";
 import { ASSETS_API_URL } from '../../../config-global';
+import AMCTableFiltersResult from '../amc-table-filters-result';
+import AMCTableToolbar from '../amc-table-toolbar';
+import AMCTableRow from '../amc-table-row';
+import { useGetContract } from '../../../api/amc';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
   { id: 'srNo', label: '#' },
-  { id: 'code', label: 'Code' },
-  { id: 'date', label: 'Date' },
-  { id: 'title', label: 'Sended By' },
-  { id: 'assigned_to', label: 'Service Person' },
-  { id: 'description', label: 'Contact' },
+  { id: 'code', label: 'Name' },
+  { id: 'date', label: 'Contact' },
+  { id: 'description', label: 'Cost' },
+  { id: 'title', label: 'Start Date' },
+  { id: 'assigned_to', label: 'End Date' },
   { id: 'description', label: 'Remark' },
-  { id: 'status', label: 'Status' },
   { id: '' },
 ];
 
@@ -77,32 +75,32 @@ const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, {
 
 // ----------------------------------------------------------------------
 
-export default function ServiceListView() {
+export default function AMCListView() {
   const { user } = useAuthContext();
   const { enqueueSnackbar } = useSnackbar();
   const table = useTable();
   const settings = useSettingsContext();
   const router = useRouter();
   const confirm = useBoolean();
-  const { service, mutate,serviceLoading } = useGetService();
+  const { contract, mutate,contractLoading } = useGetContract();
   const [tableData, setTableData] = useState([]);
   const [filters, setFilters] = useState(defaultFilters);
 
   useEffect(() => {
-    if (service) {
-      setTableData(service);
+    if (contract) {
+      setTableData(contract);
     }
-  }, [service]);
+  }, [contract]);
 
   const handleDeleteRow = useCallback(
     async (id) => {
       axios
-        .delete(`${ASSETS_API_URL}/${user.data._id}/service/${id}`)
+        .delete(`${ASSETS_API_URL}/${user.data._id}/contract/${id}`)
         .then((res) => {
           if (res) {
             mutate()
             enqueueSnackbar(res?.data?.message);
-            router.push(paths.dashboard.service.list)
+            router.push(paths.dashboard.amc.list)
           }
         })
         .catch((err) => {
@@ -169,7 +167,7 @@ export default function ServiceListView() {
 
   const handleEditRow = useCallback(
     (id) => {
-      router.push(paths.dashboard.service.edit(id));
+      router.push(paths.dashboard.amc.edit(id));
     },
     [router]
   );
@@ -183,29 +181,29 @@ export default function ServiceListView() {
 
   const handleViewRow = useCallback(
     (id) => {
-      router.push(paths.dashboard.task.edit(id));
+      router.push(paths.dashboard.amc.edit(id));
     },
     [router]
   );
 
   return (
     <>
-      {serviceLoading ? <LoadingScreen /> :
+      {contractLoading ? <LoadingScreen /> :
         <> <Container maxWidth={settings.themeStretch ? false : 'lg'}>
        <CustomBreadcrumbs
          heading="List"
          links={[
            { name: 'Dashboard', href: paths.dashboard.root },
-           { name: 'Service', href: paths.dashboard.service.root },
+           { name: 'AMC', href: paths.dashboard.amc.root },
          ]}
          action={
            <Button
              component={RouterLink}
-             href={paths.dashboard.service.new}
+             href={paths.dashboard.amc.new}
              variant="contained"
              startIcon={<Iconify icon="mingcute:add-line" />}
            >
-             New Service
+             New AMC
            </Button>
          }
          sx={{
@@ -215,44 +213,44 @@ export default function ServiceListView() {
 
        <Card>
 
-         <Tabs
-           value={filters.status}
-           onChange={handleFilterStatus}
-           sx={{
-             px: 2.5,
-             boxShadow: (theme) => `inset 0 -2px 0 0 ${alpha(theme.palette.grey[500], 0.08)}`,
-           }}
-         >
-           {STATUS_OPTIONS.map((tab) => (
-             <Tab
-               key={tab.value}
-               iconPosition='end'
-               value={tab.value}
-               label={tab.label}
-               icon={
-                 <Label
-                   variant={
-                     ((tab.value === 'all' || tab.value === filters.status) && 'filled') || 'soft'
-                   }
-                   color={
-                     (tab.value === 'completed' && 'success') ||
-                     (tab.value === 'in service' && 'warning') ||
-                     (tab.value === 'not repairable' && 'error') ||
-                     'default'
-                   }
-                 >
-                   {['in service', 'not repairable', 'completed'].includes(tab.value)
-                     ? service.filter((user) => user.status === tab.value).length
-                     : service.length}
-                 </Label>
-               }
-             />
-           ))}
-         </Tabs>
-         <ServiceTableToolbar filters={filters} onFilters={handleFilters} roleOptions={_expenses} />
+         {/*<Tabs*/}
+         {/*  value={filters.status}*/}
+         {/*  onChange={handleFilterStatus}*/}
+         {/*  sx={{*/}
+         {/*    px: 2.5,*/}
+         {/*    boxShadow: (theme) => `inset 0 -2px 0 0 ${alpha(theme.palette.grey[500], 0.08)}`,*/}
+         {/*  }}*/}
+         {/*>*/}
+         {/*  {STATUS_OPTIONS.map((tab) => (*/}
+         {/*    <Tab*/}
+         {/*      key={tab.value}*/}
+         {/*      iconPosition='end'*/}
+         {/*      value={tab.value}*/}
+         {/*      label={tab.label}*/}
+         {/*      icon={*/}
+         {/*        <Label*/}
+         {/*          variant={*/}
+         {/*            ((tab.value === 'all' || tab.value === filters.status) && 'filled') || 'soft'*/}
+         {/*          }*/}
+         {/*          color={*/}
+         {/*            (tab.value === 'completed' && 'success') ||*/}
+         {/*            (tab.value === 'in service' && 'warning') ||*/}
+         {/*            (tab.value === 'not repairable' && 'error') ||*/}
+         {/*            'default'*/}
+         {/*          }*/}
+         {/*        >*/}
+         {/*          {['in service', 'not repairable', 'completed'].includes(tab.value)*/}
+         {/*            ? contract?.filter((user) => user.status === tab.value).length*/}
+         {/*            : contract?.length}*/}
+         {/*        </Label>*/}
+         {/*      }*/}
+         {/*    />*/}
+         {/*  ))}*/}
+         {/*</Tabs>*/}
+         <AMCTableToolbar filters={filters} onFilters={handleFilters} roleOptions={_expenses} />
 
          {canReset && (
-           <ServiceTableFiltersResult
+           <AMCTableFiltersResult
              filters={filters}
              onFilters={handleFilters}
              onResetFilters={handleResetFilters}
@@ -305,8 +303,7 @@ export default function ServiceListView() {
                      table.page * table.rowsPerPage + table.rowsPerPage
                    )
                    .map((row, index) => (
-                     <ServiceTableRow
-                       mutate={mutate}
+                     <AMCTableRow
                        key={row._id}
                        row={row}
                        index={index}

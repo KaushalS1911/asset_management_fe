@@ -3,11 +3,14 @@ import { useMemo } from 'react';
 
 import { fetcher} from 'src/utils/axios';
 import { ASSETS_API_URL } from '../config-global';
+import { useAuthContext } from '../auth/hooks';
 
 // ----------------------------------------------------------------------
 
 export function useGetAssete() {
-  const URL = `${ASSETS_API_URL}/asset`;
+  const {user} = useAuthContext()
+  console.log(user);
+  const URL = `${ASSETS_API_URL}/${user?.data?._id}/asset`;
 
   const { data, isLoading, error, isValidating ,mutate} = useSWR(URL, fetcher);
 
@@ -17,7 +20,7 @@ export function useGetAssete() {
       assetsLoading: isLoading,
       assetsError: error,
       assetsValidating: isValidating,
-      assetsEmpty: !isLoading && !data.length,
+      assetsEmpty: !isLoading ,
       mutate
     }),
     [data, error, isLoading, isValidating]
@@ -26,7 +29,8 @@ export function useGetAssete() {
   return memoizedValue;
 }
 export function useGetSingleAssete(id) {
-  const URL = `${ASSETS_API_URL}/asset/${id}`;
+  const {user} = useAuthContext()
+  const URL = `${ASSETS_API_URL}/${user?.data?._id}/asset/${id}`;
 
   const { data, isLoading, error, isValidating,mutate } = useSWR(URL, fetcher);
 
@@ -36,7 +40,7 @@ export function useGetSingleAssete(id) {
       singleAssetsLoading: isLoading,
       singleAssetsError: error,
       singleAssetsValidating: isValidating,
-      singleAssetsEmpty: !isLoading && !data.length,
+      singleAssetsEmpty: !isLoading ,
       mutate
     }),
     [data, error, isLoading, isValidating]

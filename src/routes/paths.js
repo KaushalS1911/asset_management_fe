@@ -166,6 +166,12 @@ export const paths = {
       list: `${ROOTS.DASHBOARD}/service/list`,
       edit: (id) => `${ROOTS.DASHBOARD}/service/${id}/edit`,
     },
+    amc: {
+      root: `${ROOTS.DASHBOARD}/amc`,
+      new: `${ROOTS.DASHBOARD}/amc/new`,
+      list: `${ROOTS.DASHBOARD}/amc/list`,
+      edit: (id) => `${ROOTS.DASHBOARD}/amc/${id}/edit`,
+    },
 
     profile: {
       root: `${ROOTS.DASHBOARD}/profile`,

@@ -16,20 +16,19 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 // import TaskQuickEditForm from './task-quick-edit-form';
 import Label from 'src/components/label';
 import { Tooltip } from '@mui/material';
-import ServiceQuickEditForm from './service-quick-edit-form';
+import AMCQuickEditForm from './amc-quick-edit-form';
 
 // ----------------------------------------------------------------------
 
-export default function ServiceTableRow({
+export default function AMCTableRow({
   row,
   selected,
   onEditRow,
   onSelectRow,
   onDeleteRow,
   index,
-  mutate
 }) {
-  const { asset,sended_by, start_date ,remark,service_person,service_person_contact} = row;
+  const { company_name,company_contact, start_date ,remark,cost,end_date} = row;
   const confirm = useBoolean();
   const quickEdit = useBoolean();
 
@@ -39,36 +38,22 @@ export default function ServiceTableRow({
     <>
       <TableRow hover selected={selected} >
         <TableCell >{index + 1}</TableCell>
-        <TableCell >{asset.asset_code}</TableCell>
-        <TableCell >{moment(start_date).format("DD/MM/YYYY")}</TableCell>
+        <TableCell >{company_name}</TableCell>
 
-        <TableCell >{sended_by}</TableCell>
+        <TableCell >{company_contact}</TableCell>
 
         {/*<TableCell>{`${assigned_to?.firstName} ${assigned_to?.lastName}`}</TableCell>*/}
-        <TableCell >{service_person} </TableCell>
-        <TableCell >{service_person_contact} </TableCell>
+        <TableCell >{cost} </TableCell>
+        <TableCell >{moment(start_date).format("DD/MM/YYYY")}</TableCell>
+        <TableCell >{moment(end_date).format("DD/MM/YYYY")}</TableCell>
         <TableCell >{remark} </TableCell>
 
-
-        <TableCell>
-          <Label
-            variant="soft"
-            color={
-              (row.status === 'completed' && 'success') ||
-              (row.status === 'in service' && 'warning') ||
-              (row.status === 'not repairable' && 'error') ||
-              'default'
-            }
-          >
-            {row.status}
-          </Label>
-        </TableCell>
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
-          <Tooltip title="Quick Edit" placement="top" arrow>
-            <IconButton color={quickEdit.value ? 'inherit' : 'default'} onClick={quickEdit.onTrue}>
-              <Iconify icon="solar:pen-bold" />
-            </IconButton>
-          </Tooltip>
+          {/*<Tooltip title="Quick Edit" placement="top" arrow>*/}
+          {/*  <IconButton color={quickEdit.value ? 'inherit' : 'default'} onClick={quickEdit.onTrue}>*/}
+          {/*    <Iconify icon="solar:pen-bold" />*/}
+          {/*  </IconButton>*/}
+          {/*</Tooltip>*/}
           <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
@@ -76,7 +61,7 @@ export default function ServiceTableRow({
       </TableRow>
 
       {/*<TaskQuickEditForm currentUser={row} open={quickEdit.value} onClose={quickEdit.onFalse} />*/}
-<ServiceQuickEditForm currentUser={row} mutate={mutate} open={quickEdit.value} onClose={quickEdit.onFalse}/>
+<AMCQuickEditForm currentUser={row} open={quickEdit.value} onClose={quickEdit.onFalse}/>
       <CustomPopover
         open={popover.open}
         onClose={popover.onClose}
@@ -107,8 +92,8 @@ export default function ServiceTableRow({
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
-        title="Delete Task"
-        content="Are you sure want to delete selected task?"
+        title="Delete"
+        content="Are you sure want to delete selected item?"
         action={
           <Button
             variant="contained"
@@ -126,7 +111,7 @@ export default function ServiceTableRow({
   );
 }
 
-ServiceTableRow.propTypes = {
+AMCTableRow.propTypes = {
   onDeleteRow: PropTypes.func,
   onEditRow: PropTypes.func,
   onSelectRow: PropTypes.func,

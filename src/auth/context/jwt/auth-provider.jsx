@@ -54,7 +54,7 @@ export function AuthProvider({ children }) {
       const jwtRefresh = sessionStorage.getItem(JWT_REFRESH);
       if (jwt && jwtRefresh) {
         setSession(jwt, jwtRefresh);
-        const url = `${AUTH_API}/api/users/me`;
+        const url = `${AUTH_API}/api/auth/me`;
         const response = await axios.get(url);
         const user = response?.data;
         dispatch({
@@ -88,23 +88,24 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     initialize();
   }, [initialize]);
+
+
   // LOGIN
   const login = useCallback(async (email, password) => {
     const data = {
       email,
       password,
     };
-    const URL = `${AUTH_API}/api/auth/v2/login`;
+    const URL = `${AUTH_API}/api/auth/login`;
      await axios.post(URL, data).then((res) =>{
-       const { user } = res.data.data;
+       const { data } = res.data;
        enqueueSnackbar("Login Successfully")
-       const { jwt, jwtRefresh } = user.other_info;
+       const { jwt, jwtRefresh } = data;
        setSession(jwt, jwtRefresh);
        dispatch({
          type: 'LOGIN',
          payload: {
            user: {
-             ...user,
              jwt,
              jwtRefresh,
            },

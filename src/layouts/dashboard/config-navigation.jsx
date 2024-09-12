@@ -190,6 +190,12 @@ export function useNavData() {
             path: paths.dashboard.service.list,
             icon: <Iconify icon="ic:twotone-miscellaneous-services" />,
           },
+          {
+
+            title: t('AMC'),
+            path: paths.dashboard.amc.list,
+            icon: <Iconify icon="mdi:company" />,
+          },
         ],
       },
       // {

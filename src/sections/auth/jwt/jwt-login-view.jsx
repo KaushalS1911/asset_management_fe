@@ -73,7 +73,7 @@ export default function JwtLoginView() {
     <Stack spacing={2} sx={{ mb: 1 }}>
       <Typography sx={{display:"flex",justifyContent:"center",alignItems:"center"}}><Logo /></Typography>
 
-     
+
     </Stack>
   );
 

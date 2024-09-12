@@ -23,23 +23,21 @@ import { useRouter, useSearchParams } from 'src/routes/hooks';
 import Logo from '../../../components/logo';
 
 const RegisterSchema = Yup.object().shape({
-  firstName: Yup.string().required('First name is required'),
-  lastName: Yup.string().required('Last name is required'),
+
   email: Yup.string().required('Email is required').email('Must be a valid email'),
   password: Yup.string().required('Password is required'),
+  name: Yup.string().required('Name is required'),
   contact: Yup.string().notRequired(),
-  company_name: Yup.string().notRequired(),
-  role: Yup.string().notRequired(),
+
 });
 
 const defaultValues = {
-  firstName: '',
-  lastName: '',
+
   contact: '',
+  name: '',
   email: '',
   password: '',
-  company_name: '',
-  role: 'Admin',
+
 };
 
 export default function JwtRegisterView() {
@@ -62,15 +60,15 @@ export default function JwtRegisterView() {
 
   const onSubmit = async (data) => {
     try {
-      const URL = `${import.meta.env.VITE_AUTH_API}/api/register`;
+      const URL = `${import.meta.env.VITE_AUTH_API}/api/auth/register`;
       const response = await axios.post(URL, data);
       if (response.status === 200) {
         enqueueSnackbar(response.data.data.message, { variant: 'success' });
-        const result = response.data.data.tokens;
-        localStorage.setItem('jwt', result.jwt);
-        localStorage.setItem('jwtRefresh', result.jwtRefresh);
+        // const result = response.data.data.tokens;
+        // localStorage.setItem('jwt', result.jwt);
+        // localStorage.setItem('jwtRefresh', result.jwtRefresh);
         reset();
-        router.push(returnTo || PATH_AFTER_LOGIN);
+        router.push(returnTo);
       }
     } catch (error) {
       console.error('Registration failed:', error);
@@ -90,11 +88,10 @@ export default function JwtRegisterView() {
 
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={2.5}>
-          <RHFTextField name="firstName" label="First name" />
-          <RHFTextField name="lastName" label="Last name" />
+
+          <RHFTextField name="name" label="Name" />
           <RHFTextField name="contact" label="Contact" />
-          <RHFTextField name="company_name" label="Company Name" />
-          <RHFTextField name="email" label="Email address" />
+                   <RHFTextField name="email" label="Email address" />
           <RHFTextField
             name="password"
             label="Password"

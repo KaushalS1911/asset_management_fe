@@ -55,6 +55,7 @@ import TableBody from '@mui/material/TableBody';
 import { isAfter } from '../../../utils/format-time';
 import axios from 'axios';
 import { ASSETS_API_URL } from '../../../config-global';
+import { useAuthContext } from '../../../auth/hooks';
 // import {
 //   RenderCellStock,
 //   RenderCellPrice,
@@ -97,6 +98,7 @@ const HIDE_COLUMNS_TOGGLABLE = ['category', 'actions'];
 // ----------------------------------------------------------------------
 
 export default function AssetsListView() {
+  const {user} = useAuthContext()
   const { enqueueSnackbar } = useSnackbar();
 
   const confirmRows = useBoolean();
@@ -152,6 +154,7 @@ export default function AssetsListView() {
   const denseHeight = table.dense ? 56 : 56 + 20;
 
   const canReset = !isEqual(defaultFilters, filters);
+  const notFound = (!dataFiltered.length && canReset) || !dataFiltered.length;
 
   const handleFilters = useCallback((name, value) => {
     setFilters((prevState) => ({
@@ -169,7 +172,7 @@ export default function AssetsListView() {
   const handleDeleteRows = useCallback((id) => {
     // const deleteRows = tableData.filter((row) => !selectedRowIds.includes(row.id));
     axios
-      .delete(`${ASSETS_API_URL}/asset/${id}`)
+      .delete(`${ASSETS_API_URL}/${user.data._id}/asset/${id}`)
       .then((res) => {
         if (res) {
           mutate()
@@ -326,7 +329,7 @@ export default function AssetsListView() {
                     height={denseHeight}
                     emptyRows={emptyRows(table.page, table.rowsPerPage, dataFiltered.length)}
                   />
-                  {/*<TableNoData notFound={notFound} />*/}
+                  <TableNoData notFound={notFound} />
                 </TableBody>
               </Table>
             </Scrollbar>

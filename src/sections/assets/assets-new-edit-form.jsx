@@ -49,10 +49,12 @@ import { FormHelperText } from '@mui/material';
 import axios from 'axios';
 import {LoadingScreen} from "../../components/loading-screen";
 import { ASSETS_API_URL } from '../../config-global';
+import { useAuthContext } from '../../auth/hooks';
 
 // ----------------------------------------------------------------------
 
 export default function AssetsNewEditForm({ currentProduct,mutate,disable }) {
+  const {user} = useAuthContext()
   const router = useRouter();
   //  const PRODUCT_GENDER_OPTIONS = [
   //   { label: 'Men', value: 'Men' },
@@ -219,7 +221,7 @@ useEffect(() => {
 
     if(currentProduct){
     axios
-      .put(`${ASSETS_API_URL}/asset/${currentProduct?._id}`, formData)
+      .put(`${ASSETS_API_URL}/${user.data._id}/asset/${currentProduct?._id}`, formData)
       .then((res) => {
         if (res) {
           mutate()
@@ -236,7 +238,7 @@ useEffect(() => {
     }else {
 
     axios
-      .post(`${ASSETS_API_URL}/asset`, formData)
+      .post(`${ASSETS_API_URL}/${user.data._id}/asset`, formData)
       .then((res) => {
         if (res.status == 201) {
           setLoading(false)

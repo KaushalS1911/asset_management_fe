@@ -2,14 +2,14 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 
 import Button from '@mui/material/Button';
-import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
+import Avatar from '@mui/material/Avatar';
 import TableRow from '@mui/material/TableRow';
+import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
 import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
-import ListItemText from '@mui/material/ListItemText';
 
 import { useBoolean } from 'src/hooks/use-boolean';
 
@@ -41,11 +41,11 @@ export default function AssetsTableRow({ row, selected, onEditRow, onView, onDel
         <TableCell>{index+1}</TableCell>
         <TableCell sx={{ display: 'flex', alignItems: 'center',cursor:"pointer" }} onClick={onView}>
           <Avatar alt={`${asset_name}`} src={image_url} sx={{ mr: 2 }} />
-
+          {/*<TableCell sx={{ whiteSpace: 'nowrap' }}>{person_name}</TableCell>*/}
           <ListItemText
             primary={`${asset_name}`}
             secondary={""}
-            primaryTypographyProps={{ typography: 'body2' }}
+            primaryTypographyProps={{ typography: 'body2',fontWeight:600 }}
             secondaryTypographyProps={{
               component: 'span',
               color: 'text.disabled',

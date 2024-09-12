@@ -7,19 +7,19 @@ import { useAuthContext } from '../auth/hooks';
 
 // ----------------------------------------------------------------------
 
-export function useGetService() {
-  const { user } = useAuthContext()
-  const URL = `${ASSETS_API_URL}/${user?.data?._id}/service`;
+export function useGetContract() {
+  const {user} = useAuthContext()
+  const URL = `${ASSETS_API_URL}/${user?.data?._id}/contract`;
 
   const { data, isLoading, error, isValidating ,mutate} = useSWR(URL, fetcher);
 
   const memoizedValue = useMemo(
     () => ({
-      service: data || [],
-      serviceLoading: isLoading,
-      serviceError: error,
-      serviceValidating: isValidating,
-      // serviceEmpty: !isLoading && !data.length,
+      contract: data || [],
+      contractLoading: isLoading,
+      contractError: error,
+      contractValidating: isValidating,
+      // contractEmpty: !isLoading && !data.length,
       mutate
     }),
     [data, error, isLoading, isValidating]
@@ -27,18 +27,18 @@ export function useGetService() {
 
   return memoizedValue;
 }
-export function useGetSingleService(id) {
-  const { user } = useAuthContext()
-  const URL = `${ASSETS_API_URL}/${user?.data?._id}/service/${id}`;
+export function useGetSingleContract(id) {
+  const {user} = useAuthContext()
+  const URL = `${ASSETS_API_URL}/${user?.data?._id}/contract/${id}`;
 
   const { data, isLoading, error, isValidating,mutate } = useSWR(URL, fetcher);
 
   const memoizedValue = useMemo(
     () => ({
-      singleService: data || [],
-      singleServiceLoading: isLoading,
-      singleServiceError: error,
-      singleServiceValidating: isValidating,
+      singleContract: data || [],
+      singleContractLoading: isLoading,
+      singleContractError: error,
+      singleContractValidating: isValidating,
       // singleServiceEmpty: isLoading && data.length,
       mutate
     }),

@@ -104,7 +104,7 @@ export default function ServiceNewEditForm({ expensesId,singleService }) {
 setLoading(true)
     try {
       if(expensesId){
-        axios.put(`${ASSETS_API_URL}/${user.data._id}/service/${expensesId}`,{...data,asset:data.asset.value}).then((res) => {
+        axios.put(`${ASSETS_API_URL}/${user._id}/service/${expensesId}`,{...data,asset:data.asset.value}).then((res) => {
         if(res.status === 200){
           setLoading(false)
           enqueueSnackbar(res.data.message)
@@ -116,7 +116,7 @@ setLoading(true)
         })
 
       }else {
-      axios.post(`${ASSETS_API_URL}/${user.data._id}/service`,{...data,asset:data.asset.value}).then((res) => {
+      axios.post(`${ASSETS_API_URL}/${user._id}/service`,{...data,asset:data.asset.value}).then((res) => {
         if(res.status === 201){
           setLoading(false)
           enqueueSnackbar(res.data.message)

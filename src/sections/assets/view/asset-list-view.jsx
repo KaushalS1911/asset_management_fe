@@ -172,7 +172,7 @@ export default function AssetsListView() {
   const handleDeleteRows = useCallback((id) => {
     // const deleteRows = tableData.filter((row) => !selectedRowIds.includes(row.id));
     axios
-      .delete(`${ASSETS_API_URL}/${user.data._id}/asset/${id}`)
+      .delete(`${ASSETS_API_URL}/${user._id}/asset/${id}`)
       .then((res) => {
         if (res) {
           mutate()

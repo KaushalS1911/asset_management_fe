@@ -56,7 +56,7 @@ export function AuthProvider({ children }) {
         setSession(jwt, jwtRefresh);
         const url = `${AUTH_API}/api/auth/me`;
         const response = await axios.get(url);
-        const user = response?.data;
+        const user = response?.data?.data;
         dispatch({
           type: 'INITIAL',
           payload: {

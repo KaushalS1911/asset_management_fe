@@ -9,8 +9,7 @@ import { useAuthContext } from '../auth/hooks';
 
 export function useGetAssete() {
   const {user} = useAuthContext()
-  console.log(user);
-  const URL = `${ASSETS_API_URL}/${user?.data?._id}/asset`;
+  const URL = `${ASSETS_API_URL}/${user?._id}/asset`;
 
   const { data, isLoading, error, isValidating ,mutate} = useSWR(URL, fetcher);
 
@@ -30,7 +29,7 @@ export function useGetAssete() {
 }
 export function useGetSingleAssete(id) {
   const {user} = useAuthContext()
-  const URL = `${ASSETS_API_URL}/${user?.data?._id}/asset/${id}`;
+  const URL = `${ASSETS_API_URL}/${user?._id}/asset/${id}`;
 
   const { data, isLoading, error, isValidating,mutate } = useSWR(URL, fetcher);
 

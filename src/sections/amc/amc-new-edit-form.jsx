@@ -104,7 +104,7 @@ export default function AMCNewEditForm({ expensesId, singleService }) {
     try {
       setLoading(true);
       if (expensesId) {
-        axios.put(`${ASSETS_API_URL}/${user.data._id}/contract/${expensesId}`, a).then((res) => {
+        axios.put(`${ASSETS_API_URL}/${user._id}/contract/${expensesId}`, a).then((res) => {
           if (res.status === 200) {
             setLoading(false);
             enqueueSnackbar(res.data.message);
@@ -116,7 +116,7 @@ export default function AMCNewEditForm({ expensesId, singleService }) {
         });
 
       } else {
-        axios.post(`${ASSETS_API_URL}/${user.data._id}/contract`, a).then((res) => {
+        axios.post(`${ASSETS_API_URL}/${user._id}/contract`, a).then((res) => {
           if (res.status === 201) {
             enqueueSnackbar(res.data.message);
             router.push(paths.dashboard.amc.list);

@@ -9,7 +9,7 @@ import { useAuthContext } from '../auth/hooks';
 
 export function useGetService() {
   const { user } = useAuthContext()
-  const URL = `${ASSETS_API_URL}/${user?.data?._id}/service`;
+  const URL = `${ASSETS_API_URL}/${user?._id}/service`;
 
   const { data, isLoading, error, isValidating ,mutate} = useSWR(URL, fetcher);
 
@@ -29,7 +29,7 @@ export function useGetService() {
 }
 export function useGetSingleService(id) {
   const { user } = useAuthContext()
-  const URL = `${ASSETS_API_URL}/${user?.data?._id}/service/${id}`;
+  const URL = `${ASSETS_API_URL}/${user?._id}/service/${id}`;
 
   const { data, isLoading, error, isValidating,mutate } = useSWR(URL, fetcher);
 

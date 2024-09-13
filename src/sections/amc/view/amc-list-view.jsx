@@ -95,7 +95,7 @@ export default function AMCListView() {
   const handleDeleteRow = useCallback(
     async (id) => {
       axios
-        .delete(`${ASSETS_API_URL}/${user.data._id}/contract/${id}`)
+        .delete(`${ASSETS_API_URL}/${user._id}/contract/${id}`)
         .then((res) => {
           if (res) {
             mutate()

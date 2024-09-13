@@ -65,7 +65,7 @@ const {user} = useAuthContext()
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      axios.put(`${ASSETS_API_URL}/${user.data._id}/service/${currentUser?._id}`,{...data}).then((res) => {
+      axios.put(`${ASSETS_API_URL}/${user._id}/service/${currentUser?._id}`,{...data}).then((res) => {
         if(res.status === 200){
           enqueueSnackbar(res.data.message)
           mutate()

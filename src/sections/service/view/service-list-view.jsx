@@ -97,7 +97,7 @@ export default function ServiceListView() {
   const handleDeleteRow = useCallback(
     async (id) => {
       axios
-        .delete(`${ASSETS_API_URL}/${user.data._id}/service/${id}`)
+        .delete(`${ASSETS_API_URL}/${user._id}/service/${id}`)
         .then((res) => {
           if (res) {
             mutate()

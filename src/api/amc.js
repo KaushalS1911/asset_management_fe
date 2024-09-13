@@ -9,7 +9,7 @@ import { useAuthContext } from '../auth/hooks';
 
 export function useGetContract() {
   const {user} = useAuthContext()
-  const URL = `${ASSETS_API_URL}/${user?.data?._id}/contract`;
+  const URL = `${ASSETS_API_URL}/${user?._id}/contract`;
 
   const { data, isLoading, error, isValidating ,mutate} = useSWR(URL, fetcher);
 
@@ -29,7 +29,7 @@ export function useGetContract() {
 }
 export function useGetSingleContract(id) {
   const {user} = useAuthContext()
-  const URL = `${ASSETS_API_URL}/${user?.data?._id}/contract/${id}`;
+  const URL = `${ASSETS_API_URL}/${user?._id}/contract/${id}`;
 
   const { data, isLoading, error, isValidating,mutate } = useSWR(URL, fetcher);
 

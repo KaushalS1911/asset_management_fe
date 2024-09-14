@@ -13,7 +13,7 @@ import {
   TableBody,
   IconButton,
   TableContainer,
-  alpha,
+  alpha, CircularProgress, Checkbox, MenuItem, Select, InputLabel, FormControl, OutlinedInput,
 } from '@mui/material';
 
 import { paths } from 'src/routes/paths';
@@ -47,7 +47,11 @@ import ServiceTableFiltersResult from '../service-table-filters-result';
 import { useGetService } from '../../../api/service';
 import {LoadingScreen} from "../../../components/loading-screen";
 import { ASSETS_API_URL } from '../../../config-global';
-
+import GenerateOverviewPdf from '../../generate-pdf/generate-overview-pdf';
+import { Box, Stack } from '@mui/system';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import * as XLSX from 'xlsx';
+import { fDate } from '../../../utils/format-time';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
@@ -84,6 +88,7 @@ export default function ServiceListView() {
   const table = useTable();
   const settings = useSettingsContext();
   const router = useRouter();
+  const [field, setField] = useState([]);
   const confirm = useBoolean();
   const { service, mutate,serviceLoading } = useGetService();
   const [type,setType] = useState([])
@@ -202,6 +207,63 @@ export default function ServiceListView() {
     },
     [router]
   );
+  const fieldMapping = {
+    "Name":"",
+    "Type":"",
+    'Service By': 'service_by',
+    'Sended By': 'sended_by',
+    'Service Person': 'service_person',
+    'Service Person Contact': 'service_person_contact',
+    'Status': 'status',
+    'Start Date': 'start_date',
+    'End Date': 'end_date',
+
+  };
+  const handleExportExcel = () => {
+    let data = dataFiltered.map((item) => ({
+      'Name' : item?.asset?.asset_name,
+      'Type' : item?.asset?.asset_type,
+      'Asset Code' : item?.asset?.asset_code,
+      'Service By': item?.service_by,
+      'Sended By': item?.sended_by,
+      'Service Person': item?.service_person,
+      'Service Person Contact': item?.service_person_contact,
+      'Status': item?.status,
+      'Start Date': fDate(item?.start_date),
+      'End Date': fDate(item?.end_date),
+
+    }));
+    if (field.length) {
+      data = data.map((item) => {
+        const filteredItem = {};
+        field.forEach((key) => {
+          if (item.hasOwnProperty(key)) {
+            filteredItem[key] = item[key];
+          }
+        });
+        return filteredItem;
+      });
+    }
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Assets');
+    XLSX.writeFile(workbook, 'AssetList.xlsx');
+    setField([]);
+  };
+
+  const extractedData = field.reduce((result, key) => ({
+    ...result,
+    [key]: fieldMapping[key],
+  }), {});
+  const assetField = ['Name','Type','Service By', 'Sended By', 'Service Person', 'Service Person Contact', 'Status', 'Start Date', 'End Date'];
+  const handleFilterField1 = (event) => {
+    const { value } = event.target;
+    if (value.length > 7) {
+      enqueueSnackbar('You can only select up to 7 options!', { variant: 'error' });
+      return;
+    }
+    setField(value);
+  };
 
   return (
     <>
@@ -264,6 +326,106 @@ export default function ServiceListView() {
              />
            ))}
          </Tabs>
+         <Box display={'flex'} justifyContent={'flex-end'} alignItems={'center'} width={'100%'} mt={3}>
+           <FormControl
+             sx={{
+               flexShrink: 0,
+               width: {xs: 200 },
+               margin: '0px 10px',
+             }}
+           >
+             <InputLabel>Field</InputLabel>
+             <Select
+               multiple
+               value={field}
+               onChange={handleFilterField1}
+               input={<OutlinedInput label='Field' />}
+               renderValue={(selected) => selected.join(', ')}
+               MenuProps={{
+                 PaperProps: {
+                   sx: { maxHeight: 240 },
+                 },
+               }}
+             >
+               {assetField.map((option) => (
+                 <MenuItem key={option} value={option}>
+                   <Checkbox
+                     disableRipple
+                     size='small'
+                     checked={field?.includes(option)}
+                   />
+                   {option}
+                 </MenuItem>
+               ))}
+             </Select>
+           </FormControl>
+           <Box display={'flex'} justifyContent={'flex-end'} alignItems={'center'}>
+             <Stack direction='row'
+                    spacing={1} flexGrow={1}
+                    mx={1}>
+               <PDFDownloadLink
+                 document={
+                   <GenerateOverviewPdf
+                     allData={dataFiltered}
+                     heading={[
+                       { hed: 'Asset Name', Size: '180px' },
+                       { hed: 'Asset Type', Size: '180px' },
+                       { hed: 'Service By', Size: '180px' },
+                       {
+                         hed: 'Sended By',
+                         Size: '120px',
+                       },
+                       {
+                         hed: 'Service Person',
+                         Size: '120px',
+                       },
+                       {
+                         hed: 'Service Person Contact',
+                         Size: '160px',
+                       },
+                       {
+                         hed: 'Status'
+                         , Size: '180px',
+                       },
+                       {
+                         hed: 'Start Date',
+                         Size: '170px',
+                       },
+                       {
+                         hed: 'End Date',
+                         Size: '120px',
+                       },
+
+                     ].filter((item) => (field.includes(item.hed) || !field.length))}
+                     orientation={'landscape'}
+                     SubHeading={'Services'}
+                     fieldMapping={field.length ? extractedData : fieldMapping}
+                   />
+                 }
+                 fileName={'Services'}
+                 style={{ textDecoration: 'none' }}
+               >
+                 {({ loading }) => (
+                   <Tooltip title='Export to PDF'>
+                     {loading ? (
+                       <CircularProgress size={24} />
+                     ) : (
+                       <Iconify
+                         icon='eva:cloud-download-fill'
+                         onClick={() => setField([])}
+                         sx={{ width: 24, height: 30, color: '#637381', mt: 1 }}
+                       />
+                     )}
+
+                   </Tooltip>
+                 )}
+               </PDFDownloadLink>
+             </Stack>
+             <Tooltip title='Export to Excel'>
+               <Iconify icon='icon-park-outline:excel' width={22} height={24} color={'#637381'} onClick={handleExportExcel} sx={{cursor: "pointer",mr:2}}/>
+             </Tooltip>
+           </Box>
+         </Box>
          <ServiceTableToolbar filters={filters} onFilters={handleFilters} type={type} roleOptions={_expenses} />
 
          {canReset && (

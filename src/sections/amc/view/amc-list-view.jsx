@@ -13,7 +13,7 @@ import {
   TableBody,
   IconButton,
   TableContainer,
-  alpha,
+  alpha, FormControl, InputLabel, Select, OutlinedInput, MenuItem, Checkbox, CircularProgress,
 } from '@mui/material';
 
 import { paths } from 'src/routes/paths';
@@ -46,7 +46,12 @@ import AMCTableFiltersResult from '../amc-table-filters-result';
 import AMCTableToolbar from '../amc-table-toolbar';
 import AMCTableRow from '../amc-table-row';
 import { useGetContract } from '../../../api/amc';
-import { isAfter, isBetween } from '../../../utils/format-time';
+import { fDate, isAfter, isBetween } from '../../../utils/format-time';
+import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import GenerateOverviewPDF from '../../generate-pdf/generate-overview-pdf';
+import * as XLSX from 'xlsx';
 
 // ----------------------------------------------------------------------
 
@@ -85,6 +90,7 @@ export default function AMCListView() {
   const settings = useSettingsContext();
   const router = useRouter();
   const confirm = useBoolean();
+  const [field, setField] = useState([]);
   const { contract, mutate,contractLoading } = useGetContract();
   const [tableData, setTableData] = useState([]);
   const [filters, setFilters] = useState(defaultFilters);
@@ -188,7 +194,55 @@ export default function AMCListView() {
     },
     [router]
   );
+  const fieldMapping = {
+    'Company Name': 'company_name',
+    'Company Contact': 'company_contact',
+    'Cost': 'cost',
+    'Start Date': 'start_date',
+    'End Date': 'end_date',
+    'Remark': 'remark',
 
+  };
+  const handleExportExcel = () => {
+    let data = dataFiltered.map((item) => ({
+      'Company Name': item?.company_name,
+      'Company Contact': item?.company_contact,
+      'Cost': item?.cost,
+      'Start Date': fDate(item?.start_date),
+      'End Date': fDate(item?.end_date),
+      'Remark': item?.remark,
+    }));
+    if (field.length) {
+      data = data.map((item) => {
+        const filteredItem = {};
+        field.forEach((key) => {
+          if (item.hasOwnProperty(key)) {
+            filteredItem[key] = item[key];
+          }
+        });
+        return filteredItem;
+      });
+    }
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Assets');
+    XLSX.writeFile(workbook, 'AssetList.xlsx');
+    setField([]);
+  };
+
+  const extractedData = field.reduce((result, key) => ({
+    ...result,
+    [key]: fieldMapping[key],
+  }), {});
+  const assetField = ['Company Name', 'Company Contact', 'Cost',  'Start Date', 'End Date', 'Remark'];
+  const handleFilterField1 = (event) => {
+    const { value } = event.target;
+    if (value.length > 7) {
+      enqueueSnackbar('You can only select up to 7 options!', { variant: 'error' });
+      return;
+    }
+    setField(value);
+  };
   return (
     <>
       {contractLoading ? <LoadingScreen /> :
@@ -250,6 +304,100 @@ export default function AMCListView() {
          {/*    />*/}
          {/*  ))}*/}
          {/*</Tabs>*/}
+         <Box display={'flex'} justifyContent={'flex-end'} alignItems={'center'} width={'100%'} mt={3}>
+           <FormControl
+             sx={{
+               flexShrink: 0,
+               width: {xs: 200 },
+               margin: '0px 10px',
+             }}
+           >
+             <InputLabel>Field</InputLabel>
+             <Select
+               multiple
+               value={field}
+               onChange={handleFilterField1}
+               input={<OutlinedInput label='Field' />}
+               renderValue={(selected) => selected.join(', ')}
+               MenuProps={{
+                 PaperProps: {
+                   sx: { maxHeight: 240 },
+                 },
+               }}
+             >
+               {assetField.map((option) => (
+                 <MenuItem key={option} value={option}>
+                   <Checkbox
+                     disableRipple
+                     size='small'
+                     checked={field?.includes(option)}
+                   />
+                   {option}
+                 </MenuItem>
+               ))}
+             </Select>
+           </FormControl>
+           <Box display={'flex'} justifyContent={'flex-end'} alignItems={'center'}>
+             <Stack direction='row'
+                    spacing={1} flexGrow={1}
+                    mx={1}>
+               <PDFDownloadLink
+                 document={
+                   <GenerateOverviewPDF
+                     allData={dataFiltered}
+                     heading={[
+                       { hed: 'Company Name', Size: '180px' },
+                       {
+                         hed: 'Company Contact',
+                         Size: '120px',
+                       },
+                       {
+                         hed: 'Cost',
+                         Size: '120px',
+                       },
+                       {
+                         hed: 'Start Date',
+                         Size: '170px',
+                       },
+                       {
+                         hed: 'End Date',
+                         Size: '120px',
+                       },
+                       {
+                         hed: 'Remark',
+                         Size: '200px',
+                       },
+
+                     ].filter((item) => (field.includes(item.hed) || !field.length))}
+                     orientation={'landscape'}
+                     SubHeading={'Contracts'}
+                     fieldMapping={field.length ? extractedData : fieldMapping}
+                   />
+                 }
+                 fileName={'Contracts'}
+                 style={{ textDecoration: 'none' }}
+               >
+                 {({ loading }) => (
+                   <Tooltip title='Export to PDF'>
+                     {loading ? (
+                       <CircularProgress size={24} />
+                     ) : (
+                       <Iconify
+                         icon='eva:cloud-download-fill'
+                         onClick={() => setField([])}
+                         sx={{ width: 24, height: 30, color: '#637381', mt: 1 }}
+                       />
+                     )}
+
+                   </Tooltip>
+                 )}
+               </PDFDownloadLink>
+             </Stack>
+             <Tooltip title='Export to Excel'>
+               <Iconify icon='icon-park-outline:excel' width={22} height={24} color={'#637381'} onClick={handleExportExcel} sx={{cursor: "pointer",mr:2}}/>
+             </Tooltip>
+           </Box>
+         </Box>
          <AMCTableToolbar filters={filters} onFilters={handleFilters} dateError={dateError} roleOptions={_expenses} />
 
          {canReset && (

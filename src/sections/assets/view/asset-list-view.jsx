@@ -1,6 +1,6 @@
 import isEqual from 'lodash/isEqual';
 import { useState, useEffect, useCallback } from 'react';
-
+import * as XLSX from 'xlsx';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
@@ -52,10 +52,13 @@ import IconButton from '@mui/material/IconButton';
 import Scrollbar from '../../../components/scrollbar/scrollbar';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
-import { isAfter } from '../../../utils/format-time';
+import { fDate, isAfter } from '../../../utils/format-time';
 import axios from 'axios';
 import { ASSETS_API_URL } from '../../../config-global';
 import { useAuthContext } from '../../../auth/hooks';
+import { Checkbox, CircularProgress, FormControl, InputLabel, MenuItem, OutlinedInput, Select } from '@mui/material';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import GenerateOverviewPDF from '../../generate-pdf/generate-overview-pdf';
 // import {
 //   RenderCellStock,
 //   RenderCellPrice,
@@ -112,7 +115,7 @@ export default function AssetsListView() {
   const [tableData, setTableData] = useState([]);
 
   const [filters, setFilters] = useState(defaultFilters);
-
+  const [field, setField] = useState([]);
   const [selectedRowIds, setSelectedRowIds] = useState([]);
 
   const [type,setType] = useState([])
@@ -202,6 +205,64 @@ export default function AssetsListView() {
   );
   const dateError = isAfter(filters.startDate, filters.endDate);
 
+  const fieldMapping = {
+    'Name': 'asset_name',
+    'Type': 'asset_type',
+    'Company': 'company',
+    'Location': 'location',
+    'Seller name': 'seller_name',
+    'Seller Contact': 'seller_contact',
+    'Seller Company': 'seller_company',
+    'Warranty start': 'warranty_start_date',
+    'Warranty end': 'warranty_end_date',
+    'Remark': 'remark',
+
+  };
+  const handleExportExcel = () => {
+    let data = dataFiltered.map((item) => ({
+      'Name': item?.asset_name,
+      'Type': item?.asset_type,
+      'Company': item?.company,
+      'Location': item?.location,
+      'Seller name': item?.seller_name,
+      'Seller Contact': item?.seller_contact,
+      'Seller Company': item?.seller_company,
+      'Warranty start':fDate(item?.warranty_start_date) ,
+      'Warranty end':fDate(item?.warranty_end_date),
+      'Remark': item?.remark,
+    }));
+    if (field.length) {
+      data = data.map((item) => {
+        const filteredItem = {};
+        field.forEach((key) => {
+          if (item.hasOwnProperty(key)) {
+            filteredItem[key] = item[key];
+          }
+        });
+        return filteredItem;
+      });
+    }
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Assets');
+    XLSX.writeFile(workbook, 'AssetList.xlsx');
+    setField([]);
+  };
+
+  const extractedData = field.reduce((result, key) => ({
+    ...result,
+    [key]: fieldMapping[key],
+  }), {});
+  const assetField = ['Name', 'Type', 'Company', 'Location', 'Seller name', 'Seller Contact', 'Seller Company', 'Warranty start', 'Warranty end', 'Remark', 'Course'];
+  const handleFilterField1 = (event) => {
+    const { value } = event.target;
+    if (value.length > 7) {
+      enqueueSnackbar('You can only select up to 7 options!', { variant: 'error' });
+      return;
+    }
+    setField(value);
+  };
+
   return (
     <>
       {assetsLoading ? <LoadingScreen /> : <Container maxWidth={settings.themeStretch ? false : 'lg'}>
@@ -261,6 +322,150 @@ export default function AssetsListView() {
           {/*    />*/}
           {/*  ))}*/}
           {/*</Tabs>*/}
+          {/*<Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: 'center', gap: 1 }}>*/}
+          {/*<FormControl*/}
+          {/*  sx={{*/}
+          {/*    flexShrink: 0,*/}
+          {/*    width: { xs: '100%', md: 200 },*/}
+          {/*    margin: '0px 10px',*/}
+          {/*  }}*/}
+          {/*>*/}
+          {/*  <InputLabel>Field</InputLabel>*/}
+          {/*  <Select*/}
+          {/*    multiple*/}
+          {/*    value={field}*/}
+          {/*    onChange={handleFilterField1}*/}
+          {/*    input={<OutlinedInput label='Field' />}*/}
+          {/*    renderValue={(selected) => selected.join(', ')}*/}
+          {/*    MenuProps={{*/}
+          {/*      PaperProps: {*/}
+          {/*        sx: { maxHeight: 240 },*/}
+          {/*      },*/}
+          {/*    }}*/}
+          {/*  >*/}
+          {/*    {assetField.map((option) => (*/}
+          {/*      <MenuItem key={option} value={option}>*/}
+          {/*        <Checkbox*/}
+          {/*          disableRipple*/}
+          {/*          size='small'*/}
+          {/*          checked={field?.includes(option)}*/}
+          {/*        />*/}
+          {/*        {option}*/}
+          {/*      </MenuItem>*/}
+          {/*    ))}*/}
+          {/*  </Select>*/}
+          {/*</FormControl>*/}
+          {/*  </Box>*/}
+          <Box display={'flex'} justifyContent={'flex-end'} alignItems={'center'} width={'100%'} mt={3}>
+            <FormControl
+              sx={{
+                flexShrink: 0,
+                width: {xs: 200 },
+                margin: '0px 10px',
+              }}
+            >
+              <InputLabel>Field</InputLabel>
+              <Select
+                multiple
+                value={field}
+                onChange={handleFilterField1}
+                input={<OutlinedInput label='Field' />}
+                renderValue={(selected) => selected.join(', ')}
+                MenuProps={{
+                  PaperProps: {
+                    sx: { maxHeight: 240 },
+                  },
+                }}
+              >
+                {assetField.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    <Checkbox
+                      disableRipple
+                      size='small'
+                      checked={field?.includes(option)}
+                    />
+                    {option}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <Box display={'flex'} justifyContent={'flex-end'} alignItems={'center'}>
+              <Stack direction='row'
+                     spacing={1} flexGrow={1}
+                     mx={1}>
+                <PDFDownloadLink
+                  document={
+                    <GenerateOverviewPDF
+                      allData={dataFiltered}
+                      heading={[
+                        { hed: 'Name', Size: '180px' },
+                        {
+                          hed: 'Type',
+                          Size: '120px',
+                        },
+                        {
+                          hed: 'Company',
+                          Size: '120px',
+                        },
+                        {
+                          hed: 'Location',
+                          Size: '160px',
+                        },
+                        {
+                          hed: 'Seller name'
+                          , Size: '180px',
+                        },
+                        {
+                          hed: 'Seller Contact',
+                          Size: '170px',
+                        },
+                        {
+                          hed: 'Seller Company',
+                          Size: '180px',
+                        },
+                        {
+                          hed: 'Warranty start',
+                          Size: '120px',
+                        },
+                        {
+                          hed: 'Warranty end',
+                          Size: '180px',
+                        },
+                        {
+                          hed: 'Remark',
+                          Size: '200px',
+                        },
+
+                        ].filter((item) => (field.includes(item.hed) || !field.length))}
+                      orientation={'landscape'}
+                      SubHeading={'Assets'}
+                      fieldMapping={field.length ? extractedData : fieldMapping}
+                    />
+                  }
+                  fileName={'Assets'}
+                  style={{ textDecoration: 'none' }}
+                >
+                  {({ loading }) => (
+                    <Tooltip title='Export to PDF'>
+                      {loading ? (
+                        <CircularProgress size={24} />
+                      ) : (
+                        <Iconify
+                          icon='eva:cloud-download-fill'
+                          onClick={() => setField([])}
+                          sx={{ width: 24, height: 30, color: '#637381', mt: 1 }}
+                        />
+                      )}
+
+                    </Tooltip>
+                  )}
+                </PDFDownloadLink>
+              </Stack>
+              <Tooltip title='Export to Excel'>
+                <Iconify icon='icon-park-outline:excel' width={22} height={24} color={'#637381'} onClick={handleExportExcel} sx={{cursor: "pointer",mr:2}}/>
+              </Tooltip>
+            </Box>
+          </Box>
           <AssetsTableToolbar
             filters={filters}
             onFilters={handleFilters}
@@ -369,7 +574,7 @@ export default function AssetsListView() {
       />
     </>
   );
-}
+};
 
 // ----------------------------------------------------------------------
 

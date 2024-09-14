@@ -20,6 +20,7 @@ export default function ServiceTableToolbar({
                                               filters,
                                               onFilters,
                                               roleOptions,
+  type
                                             }) {
   const popover = usePopover();
 
@@ -29,11 +30,10 @@ export default function ServiceTableToolbar({
     },
     [onFilters],
   );
-
-  const handleFilterRole = useCallback(
+  const handleFilterGender = useCallback(
     (event) => {
       onFilters(
-        'role',
+        'type',
         typeof event.target.value === 'string' ? event.target.value.split(',') : event.target.value,
       );
     },
@@ -70,6 +70,33 @@ export default function ServiceTableToolbar({
             }}
           />
         </Stack>
+        <FormControl
+          sx={{
+            flexShrink: 0,
+            width: { xs: 1, md: 200 },
+          }}
+        >
+          <InputLabel>Type</InputLabel>
+          <Select
+            multiple
+            value={filters.type}
+            onChange={handleFilterGender}
+            input={<OutlinedInput label='Type' />}
+            renderValue={(selected) => selected.map((value) => value).join(', ')}
+            MenuProps={{
+              PaperProps: {
+                sx: { maxHeight: 240 },
+              },
+            }}
+          >
+            {type.map((option) => (
+              <MenuItem key={option} value={option}>
+                <Checkbox disableRipple size='small' checked={filters.type.includes(option)} />
+                {option}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
         {/* <FormControl
           sx={{
             flexShrink: 0,

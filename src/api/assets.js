@@ -20,6 +20,7 @@ export function useGetAssete() {
       assetsError: error,
       assetsValidating: isValidating,
       assetsEmpty: !isLoading ,
+      assetsLength: data?.length ,
       mutate
     }),
     [data, error, isLoading, isValidating]

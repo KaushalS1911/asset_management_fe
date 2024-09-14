@@ -8,6 +8,7 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 
 import Iconify from 'src/components/iconify';
+import { shortDateLabel } from '../../components/custom-date-range-picker';
 
 // ----------------------------------------------------------------------
 
@@ -20,12 +21,18 @@ export default function AMCTableFiltersResult({
   results,
   ...other
 }) {
+  const shortLabel = shortDateLabel(filters.startDate, filters.endDate);
   const handleRemoveKeyword = useCallback(() => {
     onFilters('name', '');
   }, [onFilters]);
 
   const handleRemoveStatus = useCallback(() => {
     onFilters('status', 'all');
+  }, [onFilters]);
+
+  const handleRemoveDate = useCallback(() => {
+    onFilters('startDate', null);
+    onFilters('endDate', null);
   }, [onFilters]);
 
   // const handleRemoveRole = useCallback(
@@ -60,7 +67,11 @@ export default function AMCTableFiltersResult({
         {/*    ))}*/}
         {/*  </Block>*/}
         {/*)}*/}
-
+        {filters.startDate && filters.endDate && (
+          <Block label="Date:">
+            <Chip size="small" label={shortLabel} onDelete={handleRemoveDate} />
+          </Block>
+        )}
         {!!filters.name && (
           <Block label="Keyword:">
             <Chip label={filters.name} size="small" onDelete={handleRemoveKeyword} />

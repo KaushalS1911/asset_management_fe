@@ -19,7 +19,7 @@ export function useGetService() {
       serviceLoading: isLoading,
       serviceError: error,
       serviceValidating: isValidating,
-      // serviceEmpty: !isLoading && !data.length,
+      serviceLength:data?.length,      // serviceEmpty: !isLoading && !data.length,
       mutate
     }),
     [data, error, isLoading, isValidating]

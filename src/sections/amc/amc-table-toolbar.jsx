@@ -5,8 +5,9 @@ import Stack from '@mui/material/Stack';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
-
+import { formHelperTextClasses } from '@mui/material/FormHelperText';
 import Iconify from 'src/components/iconify';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
@@ -20,6 +21,7 @@ export default function AMCTableToolbar({
                                               filters,
                                               onFilters,
                                               roleOptions,
+                                          dateError
                                             }) {
   const popover = usePopover();
 
@@ -39,6 +41,20 @@ export default function AMCTableToolbar({
     },
     [onFilters],
   );
+  const handleFilterStartDate = useCallback(
+    (newValue) => {
+      onFilters('startDate', newValue);
+    },
+    [onFilters]
+  );
+
+  const handleFilterEndDate = useCallback(
+    (newValue) => {
+      onFilters('endDate', newValue);
+    },
+    [onFilters]
+  );
+
 
   return (
     <>
@@ -54,7 +70,39 @@ export default function AMCTableToolbar({
           pr: { xs: 2.5, md: 2.5 },
         }}
       >
+        <DatePicker
+          label="Start date"
+          value={filters.startDate}
+          onChange={handleFilterStartDate}
+          slotProps={{
+            textField: {
+              fullWidth: true,
+            },
+          }}
+          sx={{
+            maxWidth: { md: 200 },
+          }}
+        />
 
+        <DatePicker
+          label="End date"
+          value={filters.endDate}
+          onChange={handleFilterEndDate}
+          slotProps={{
+            textField: {
+              fullWidth: true,
+              error: dateError,
+              helperText: dateError && 'End date must be later than start date',
+            },
+          }}
+          sx={{
+            maxWidth: { md: 200 },
+            [`& .${formHelperTextClasses.root}`]: {
+              position: { md: 'absolute' },
+              bottom: { md: -40 },
+            },
+          }}
+        />
         <Stack direction="row" alignItems="center" spacing={2} flexGrow={1} sx={{ width: 1 }}>
           <TextField
             fullWidth

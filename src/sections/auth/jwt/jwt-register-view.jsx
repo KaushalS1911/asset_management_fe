@@ -68,7 +68,7 @@ export default function JwtRegisterView() {
         // localStorage.setItem('jwt', result.jwt);
         // localStorage.setItem('jwtRefresh', result.jwtRefresh);
         reset();
-        router.push(returnTo);
+        router.push(returnTo || PATH_AFTER_LOGIN);
       }
     } catch (error) {
       console.error('Registration failed:', error);

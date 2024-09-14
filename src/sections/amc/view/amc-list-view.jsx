@@ -46,6 +46,7 @@ import AMCTableFiltersResult from '../amc-table-filters-result';
 import AMCTableToolbar from '../amc-table-toolbar';
 import AMCTableRow from '../amc-table-row';
 import { useGetContract } from '../../../api/amc';
+import { isAfter, isBetween } from '../../../utils/format-time';
 
 // ----------------------------------------------------------------------
 
@@ -64,6 +65,8 @@ const defaultFilters = {
   name: '',
   role: [],
   status: 'all',
+  startDate: null,
+  endDate: null,
 };
 const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, {
   value: 'completed',
@@ -138,7 +141,7 @@ export default function AMCListView() {
     filters,
   });
 
-
+  const dateError = isAfter(filters.startDate, filters.endDate);
   const dataInPage = dataFiltered.slice(
     table.page * table.rowsPerPage,
     table.page * table.rowsPerPage + table.rowsPerPage
@@ -247,7 +250,7 @@ export default function AMCListView() {
          {/*    />*/}
          {/*  ))}*/}
          {/*</Tabs>*/}
-         <AMCTableToolbar filters={filters} onFilters={handleFilters} roleOptions={_expenses} />
+         <AMCTableToolbar filters={filters} onFilters={handleFilters} dateError={dateError} roleOptions={_expenses} />
 
          {canReset && (
            <AMCTableFiltersResult
@@ -367,8 +370,8 @@ export default function AMCListView() {
 
 // ----------------------------------------------------------------------
 
-function applyFilter({ inputData, comparator, filters }) {
-  const { name, status, role } = filters;
+function applyFilter({ inputData, comparator, filters ,dateError}) {
+  const { name, status, role,startDate, endDate  } = filters;
 
   const stabilizedThis = inputData.map((el, index) => [el, index]);
 
@@ -383,9 +386,7 @@ function applyFilter({ inputData, comparator, filters }) {
   if (name) {
     inputData = inputData.filter(
       (user) =>
-        user.sended_by.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
-        user.service_person.toLowerCase().indexOf(name.toLowerCase()) !== -1
-    );
+        user.company_name.toLowerCase().indexOf(name.toLowerCase()) !== -1)
   }
 
   if (status !== 'all') {
@@ -394,6 +395,11 @@ function applyFilter({ inputData, comparator, filters }) {
 
   if (role.length) {
     inputData = inputData.filter((user) => role.includes(user.type));
+  }
+  if (!dateError) {
+    if (startDate && endDate) {
+      inputData = inputData.filter((order) => isBetween(order?.start_date, startDate, endDate));
+    }
   }
 
   return inputData;

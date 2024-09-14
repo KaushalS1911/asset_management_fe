@@ -23,7 +23,14 @@ export default function ServiceTableFiltersResult({
   const handleRemoveKeyword = useCallback(() => {
     onFilters('name', '');
   }, [onFilters]);
+  const handleRemoveType = useCallback(
+    (inputValue) => {
+      const newValue = filters.type.filter((item) => item !== inputValue);
 
+      onFilters('type', newValue);
+    },
+    [filters.type, onFilters],
+  );
   const handleRemoveStatus = useCallback(() => {
     onFilters('status', 'all');
   }, [onFilters]);
@@ -50,6 +57,13 @@ export default function ServiceTableFiltersResult({
         {filters.status !== 'all' && (
           <Block label="Status:">
             <Chip size="small" label={filters.status} onDelete={handleRemoveStatus} />
+          </Block>
+        )}
+        {!!filters.type.length && (
+          <Block label='Type:'>
+            {filters.type.map((item) => (
+              <Chip key={item} label={item} size='small' onDelete={() => handleRemoveType(item)} />
+            ))}
           </Block>
         )}
 

@@ -66,6 +66,7 @@ const defaultFilters = {
   name: '',
   role: [],
   status: 'all',
+  type:[],
 };
 const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, {
   value: 'completed',
@@ -85,12 +86,14 @@ export default function ServiceListView() {
   const router = useRouter();
   const confirm = useBoolean();
   const { service, mutate,serviceLoading } = useGetService();
+  const [type,setType] = useState([])
   const [tableData, setTableData] = useState([]);
   const [filters, setFilters] = useState(defaultFilters);
 
   useEffect(() => {
     if (service) {
       setTableData(service);
+      fetchStates()
     }
   }, [service]);
 
@@ -139,7 +142,19 @@ export default function ServiceListView() {
     comparator: getComparator(table.order, table.orderBy),
     filters,
   });
+  function fetchStates() {
+    service?.map((data) => {
+      setType((item) => {
+        if (!item.includes(data.asset.asset_type)) {
+          return [...item, data.asset.asset_type];
+        } else {
+          return item;
+        }
+      });
 
+
+    });
+  }
 
   const dataInPage = dataFiltered.slice(
     table.page * table.rowsPerPage,
@@ -249,7 +264,7 @@ export default function ServiceListView() {
              />
            ))}
          </Tabs>
-         <ServiceTableToolbar filters={filters} onFilters={handleFilters} roleOptions={_expenses} />
+         <ServiceTableToolbar filters={filters} onFilters={handleFilters} type={type} roleOptions={_expenses} />
 
          {canReset && (
            <ServiceTableFiltersResult
@@ -371,7 +386,7 @@ export default function ServiceListView() {
 // ----------------------------------------------------------------------
 
 function applyFilter({ inputData, comparator, filters }) {
-  const { name, status, role } = filters;
+  const { name, status, role,type } = filters;
 
   const stabilizedThis = inputData.map((el, index) => [el, index]);
 
@@ -390,7 +405,9 @@ function applyFilter({ inputData, comparator, filters }) {
         user.service_person.toLowerCase().indexOf(name.toLowerCase()) !== -1
     );
   }
-
+  if (type.length) {
+    inputData = inputData.filter((user) => type.includes(user?.asset?.asset_type));
+  }
   if (status !== 'all') {
     inputData = inputData.filter((user) => user.status === status);
   }

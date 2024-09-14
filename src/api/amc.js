@@ -19,6 +19,7 @@ export function useGetContract() {
       contractLoading: isLoading,
       contractError: error,
       contractValidating: isValidating,
+      contractLength: data?.length ,
       // contractEmpty: !isLoading && !data.length,
       mutate
     }),

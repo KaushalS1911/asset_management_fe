@@ -45,16 +45,39 @@ export default function AMCTableToolbar({
   );
   const handleFilterStartDate = useCallback(
     (newValue) => {
-      onFilters('startDate', newValue);
-    },
-    [onFilters]
-  );
+      if (newValue === null || newValue === undefined) {
+        onFilters('startDate', null);
+        return;
+      }
 
+      const date = moment(newValue);
+
+      if (date.isValid()) {
+        onFilters('startDate', date.toDate());
+      } else {
+        console.warn('Invalid date selected');
+        onFilters('startDate', null);
+      }
+    },
+    [onFilters],
+  );
   const handleFilterEndDate = useCallback(
     (newValue) => {
-      onFilters('endDate', newValue);
+      if (newValue === null || newValue === undefined) {
+        onFilters('endDate', null);
+        return;
+      }
+
+      const date = moment(newValue);
+
+      if (date.isValid()) {
+        onFilters('endDate', date.toDate());
+      } else {
+        console.warn('Invalid date selected');
+        onFilters('endDate', null);
+      }
     },
-    [onFilters]
+    [onFilters],
   );
 
 

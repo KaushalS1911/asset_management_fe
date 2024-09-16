@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useCallback } from 'react';
-
+import {useState} from 'react';
 import Stack from '@mui/material/Stack';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
@@ -14,6 +14,7 @@ import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Checkbox from '@mui/material/Checkbox';
+import moment from 'moment';
 
 // ----------------------------------------------------------------------
 
@@ -24,7 +25,8 @@ export default function AMCTableToolbar({
                                           dateError
                                             }) {
   const popover = usePopover();
-
+  const [startDateOpen, setStartDateOpen] = useState(false);
+  const [endDateOpen, setEndDateOpen] = useState(false);
   const handleFilterName = useCallback(
     (event) => {
       onFilters('name', event.target.value);
@@ -72,10 +74,13 @@ export default function AMCTableToolbar({
       >
         <DatePicker
           label="Start date"
-          value={filters.startDate}
+          value={filters.startDate ? moment(filters.startDate).toDate() : null}
+          open={startDateOpen}
+          onClose={() => setStartDateOpen(false)}
           onChange={handleFilterStartDate}
           slotProps={{
             textField: {
+              onClick: () => setStartDateOpen(true),
               fullWidth: true,
             },
           }}
@@ -83,13 +88,15 @@ export default function AMCTableToolbar({
             maxWidth: { md: 200 },
           }}
         />
-
         <DatePicker
           label="End date"
           value={filters.endDate}
+          open={endDateOpen}
+          onClose={() => setEndDateOpen(false)}
           onChange={handleFilterEndDate}
           slotProps={{
             textField: {
+              onClick: () => setEndDateOpen(true),
               fullWidth: true,
               error: dateError,
               helperText: dateError && 'End date must be later than start date',

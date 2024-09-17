@@ -110,7 +110,7 @@ export default function AssetsListView() {
 
   const settings = useSettingsContext();
 
-  const { assets, assetsLoading,mutate } = useGetAssete();
+    const { assets,assetsLoading,mutate } = useGetAssete();
 
   const [tableData, setTableData] = useState([]);
 
@@ -177,10 +177,11 @@ export default function AssetsListView() {
     axios
       .delete(`${ASSETS_API_URL}/${user._id}/asset/${id}`)
       .then((res) => {
-        if (res) {
+        if (res.data.message) {
           mutate()
           enqueueSnackbar(res?.data?.message);
           router.push(paths.dashboard.assets.list)
+          setTableData(assets);
         }
       })
       .catch((err) => {
@@ -188,7 +189,7 @@ export default function AssetsListView() {
       });
 
     // setTableData(deleteRows);
-  }, [enqueueSnackbar, selectedRowIds, tableData]);
+  }, [enqueueSnackbar,assets,mutate,router]);
 
   const handleEditRow = useCallback(
     (id) => {
@@ -550,28 +551,28 @@ export default function AssetsListView() {
           />
         </Card>
       </Container>}
-      <ConfirmDialog
-        open={confirm.value}
-        onClose={confirm.onFalse}
-        title='Delete Student'
-        content={
-          <>
-            Are you sure want to delete <strong> {table.selected.length} </strong> student?
-          </>
-        }
-        action={
-          <Button
-            variant='contained'
-            color='error'
-            onClick={() => {
-              handleDeleteRows(table.selected);
-              confirm.onFalse();
-            }}
-          >
-            Delete
-          </Button>
-        }
-      />
+      {/*<ConfirmDialog*/}
+      {/*  open={confirm.value}*/}
+      {/*  onClose={confirm.onFalse}*/}
+      {/*  title='Delete Student'*/}
+      {/*  content={*/}
+      {/*    <>*/}
+      {/*      Are you sure want to delete <strong> {table.selected.length} </strong> student?*/}
+      {/*    </>*/}
+      {/*  }*/}
+      {/*  action={*/}
+      {/*    <Button*/}
+      {/*      variant='contained'*/}
+      {/*      color='error'*/}
+      {/*      onClick={() => {*/}
+      {/*        handleDeleteRows(table.selected);*/}
+      {/*        confirm.onFalse();*/}
+      {/*      }}*/}
+      {/*    >*/}
+      {/*      Delete*/}
+      {/*    </Button>*/}
+      {/*  }*/}
+      {/*/>*/}
     </>
   );
 };

@@ -139,7 +139,7 @@ export default function AMCListView() {
       console.error('Failed to delete Tasks', error);
       enqueueSnackbar('Failed to delete Tasks', { variant: 'error' });
     }
-  }, [enqueueSnackbar, mutate, table, confirm]);
+  }, [enqueueSnackbar, mutate, table, confirm,router]);
 
   const dataFiltered = applyFilter({
     inputData: tableData,

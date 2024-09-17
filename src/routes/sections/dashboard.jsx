@@ -19,6 +19,7 @@ import ServiceListPage from '../../pages/dashboard/service';
 import AmcListPage from '../../pages/dashboard/amc';
 import AMCCreateView from '../../sections/amc/view/amc-create-view';
 import AMCEditView from '../../sections/amc/view/amc-edit-view';
+import { SettingsPage } from '../../sections/settings/view';
 
 
 // OVERVIEW
@@ -44,6 +45,7 @@ export const dashboardRoutes = [
     ),
     children: [
       { element: <IndexPage />, index: true },
+      { path: 'setting', element: <SettingsPage /> },
       // { path: 'complain', element: <ComplainListView /> },
       // {
       //   path: 'fees',

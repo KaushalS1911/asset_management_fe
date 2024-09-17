@@ -103,8 +103,8 @@ export default function AssetsTableRow({ row, selected, onEditRow, onView, onDel
         </MenuItem>
         <MenuItem
           onClick={() => {
-            confirm.onTrue();
-            // onDeleteRow()
+            onDeleteRow()
+            confirm.onFalse();
             popover.onClose();
           }}
           sx={{ color: 'error.main' }}

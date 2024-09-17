@@ -28,7 +28,6 @@ export default function  AccountPopover() {
   const searchParams = useSearchParams();
   const returnTo = searchParams.get('returnTo');
   const { user, logout } = useAuthContext();
-  console.log(user);
   const otherOption = [
     {
       label: 'Profile',

@@ -74,6 +74,8 @@ const [loading,setLoading] = useState(false)
   const [file, setFile] = useState(currentProduct?.image_url || null);
 const {config} = useGetConfigs()
   const [type,setType] = useState([])
+  const [name,setName] = useState([])
+  const [company,setCompany] = useState([])
   const [file1, setFile1] = useState(currentProduct?.invoice_url || null);
   const mdUp = useResponsive('up', 'md');
   const { enqueueSnackbar } = useSnackbar();
@@ -83,6 +85,8 @@ const {config} = useGetConfigs()
 useEffect(() => {
   if(config?.asset_types){
     setType(config?.asset_types)
+    setName(config?.asset_name)
+    setCompany(config?.company)
   }
 } ,[config])
   const NewProductSchema = Yup.object().shape({
@@ -101,7 +105,6 @@ useEffect(() => {
     location: Yup.string().required('Location is required'),
     invoice_no: Yup.string().required('Invoice number is required'),
     // invoice_url: Yup.mixed().required('Invoice is required'),
-    remark: Yup.string().required('Remark is required'),
     in_warranty: Yup.string().required('Warranty is required'),
     purchase_date: Yup.mixed().nullable().required('Expired date is required'),
   });
@@ -321,7 +324,28 @@ useEffect(() => {
                     md: 'repeat(2, 1fr)',
                   }}>
 
-            <RHFTextField disabled={disable} name="asset_name" label="Asset Name" />
+            {/*<RHFTextField disabled={disable} name="asset_name" label="Asset Name" />*/}
+              <Controller
+                name="asset_name"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <RHFAutocomplete
+                    {...field}
+                    disabled={disable}
+                    label="Asset Name"
+                    fullWidth
+                    options={name}
+                    getOptionLabel={(option) => option}
+                    renderOption={(props, option) => (
+                      <li {...props} key={option}>
+                        {option}
+                      </li>
+                    )}
+
+                  />
+                )}
+              />
               <Controller
                 name="asset_type"
                 control={control}
@@ -370,7 +394,28 @@ useEffect(() => {
               {/*  )}*/}
               {/*/>*/}
             <RHFTextField disabled={disable} name="asset_code" label="Asset Code" />
-            <RHFTextField disabled={disable} name="company" label="Company" />
+            {/*<RHFTextField disabled={disable} name="company" label="Company" />*/}
+              <Controller
+                name="company"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <RHFAutocomplete
+                    {...field}
+                    disabled={disable}
+                    label="Company"
+                    fullWidth
+                    options={company}
+                    getOptionLabel={(option) => option}
+                    renderOption={(props, option) => (
+                      <li {...props} key={option}>
+                        {option}
+                      </li>
+                    )}
+
+                  />
+                )}
+              />
               <Stack spacing={1.5}>
                 <Controller disabled={disable}
                   name="purchase_date"

@@ -26,9 +26,9 @@ const Logo = forwardRef(({ disabledLink = false, navWidth, sx, ...other }, ref) 
         src={logo1}
         alt={logo1}
         style={{
-          borderRadius: '50%',
-          width: navWidth ? '75px' : '124px',
-          height: navWidth ? '75px' : '124px',
+          // borderRadius: '50%',
+          width: navWidth ? '75px' : '200px',
+          // height: navWidth ? '75px' : '100px',
         }}
       />
     </Box>

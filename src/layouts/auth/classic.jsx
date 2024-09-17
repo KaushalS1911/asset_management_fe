@@ -102,23 +102,24 @@ const router = useRouter()
             md={7}
             lg={8}
             sx={{
-              background: `linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)),url(${loginImage})`,
+              background: `url(${loginImage})`,
               backgroundRepeat: 'no-repeat',
               backgroundSize: 'cover',
-              color: '#ffffffd1',
-              justifyContent: 'center',
-              alignItems: 'center',
-              display: { md: 'flex', xs: 'none' },
+              backgroundPosition:'center'
+              // color: '#ffffffd1',
+              // justifyContent: 'center',
+              // alignItems: 'center',
+              // display: { md: 'flex', xs: 'none' },
             }}
           >
-            <Box sx={{ width: '355px' }}>
-              <Typography sx={{ fontSize: '45px', fontWeight: '700', lineHeight: '1.2', paddingRight: '44px' }}>
-                Hello and Wel-come to Eduaura
-              </Typography>
-              <Typography sx={{ mt: '30px' }}>
-                One Place for your all monthly activities and requirements. sign up and get in to know more...
-              </Typography>
-            </Box>
+            {/*<Box sx={{ width: '355px' }}>*/}
+            {/*  <Typography sx={{ fontSize: '45px', fontWeight: '700', lineHeight: '1.2', paddingRight: '44px' }}>*/}
+            {/*    Hello and Wel-come to Eduaura*/}
+            {/*  </Typography>*/}
+            {/*  <Typography sx={{ mt: '30px' }}>*/}
+            {/*    One Place for your all monthly activities and requirements. sign up and get in to know more...*/}
+            {/*  </Typography>*/}
+            {/*</Box>*/}
           </Grid>
         </Grid>
       </Box>

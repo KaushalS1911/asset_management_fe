@@ -50,6 +50,7 @@ import axios from 'axios';
 import {LoadingScreen} from "../../components/loading-screen";
 import { ASSETS_API_URL } from '../../config-global';
 import { useAuthContext } from '../../auth/hooks';
+import { useGetConfigs } from '../../api/config';
 
 // ----------------------------------------------------------------------
 
@@ -71,13 +72,19 @@ export default function AssetsNewEditForm({ currentProduct,mutate,disable }) {
   ];
 const [loading,setLoading] = useState(false)
   const [file, setFile] = useState(currentProduct?.image_url || null);
+const {config} = useGetConfigs()
+  const [type,setType] = useState([])
   const [file1, setFile1] = useState(currentProduct?.invoice_url || null);
   const mdUp = useResponsive('up', 'md');
   const { enqueueSnackbar } = useSnackbar();
   const [selectedAssetType, setSelectedAssetType] = useState(currentProduct?.asset_type || '');
   const [includeTaxes, setIncludeTaxes] = useState(false);
   const [warrantyStatus, setWarrantyStatus] = useState(currentProduct?.in_warranty == true ? "in_warranty" : "out_of_warranty" || '');
-
+useEffect(() => {
+  if(config?.asset_types){
+    setType(config?.asset_types)
+  }
+} ,[config])
   const NewProductSchema = Yup.object().shape({
     // image_url: Yup.mixed().nullable().required('Image is required'),
     asset_name: Yup.string().required('Name is required'),
@@ -262,7 +269,6 @@ useEffect(() => {
     //   console.error(error);
     // }
   });
-
   const handleAssetTypeChange = (value) => {
     setSelectedAssetType(value);
   };
@@ -326,7 +332,7 @@ useEffect(() => {
                     disabled={disable}
                     label="Asset Type"
                     fullWidth
-                    options={['Speaker', 'Keyboard', 'Mouse', 'Monitor', 'Light', 'Fan', 'Cable', 'Chair', 'Vehicle']}
+                    options={type}
                     getOptionLabel={(option) => option}
                     renderOption={(props, option) => (
                       <li {...props} key={option}>

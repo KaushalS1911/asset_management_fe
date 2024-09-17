@@ -39,7 +39,7 @@ export default function ServiceTableRow({
     <>
       <TableRow hover selected={selected} >
         <TableCell >{index + 1}</TableCell>
-        <TableCell >{asset.asset_code}</TableCell>
+        <TableCell >{asset?.asset_code}</TableCell>
         <TableCell >{moment(start_date).format("DD/MM/YYYY")}</TableCell>
 
         <TableCell >{sended_by}</TableCell>

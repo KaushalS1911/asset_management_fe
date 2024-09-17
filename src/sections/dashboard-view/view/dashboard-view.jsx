@@ -1,51 +1,17 @@
-import Stack from '@mui/material/Stack';
 import { useTheme } from '@mui/material/styles';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
 import { useSettingsContext } from 'src/components/settings';
-import DashboardAttendenceChart from '../dashboard-attendence-chart';
 import DashboardCount from '../dashboard-compony-count';
-import DashboardDemoInquiryChart from '../dashboard-demo-inquiry-chart';
-import DashboardUpcomingDemo from '../dashboard-upcoming-demo';
-import DashboardCourseChart from '../dashboard-course-chart';
-import { useEffect, useState } from 'react';
-import { useAuthContext } from 'src/auth/hooks';
-import {
-  useGetAttendance,
-  useGetCourses,
-  useGetDashboardData,
-  useGetDemos,
-} from '../../../api/dashboard';
-import { useGetVisitsOverview } from '../../../api/visit_overview';
-import { useGetInquiryOverview } from '../../../api/inquiry_overview';
 import { useGetService } from '../../../api/service';
 import { useGetContract } from '../../../api/amc';
 import { useGetAssete } from '../../../api/assets';
 
 export default function DashboardView() {
   const theme = useTheme();
-  const { user } = useAuthContext();
-  const [course, setCourse] = useState({});
-  const [dashboardData, setDashboardData] = useState([]);
-  const [labs, setLabs] = useState(0);
-  const { demos } = useGetDemos();
-  const { dashboard } = useGetDashboardData();
-  const { courses } = useGetCourses();
-  const { attendance } = useGetAttendance();
   const {serviceLength} = useGetService()
   const {contractLength} = useGetContract()
   const {assetsLength} = useGetAssete()
-
-  useEffect(() => {
-
-
-  }, [demos, dashboard, courses, attendance]);
-
-  const output = [];
-
-  for (const [key, value] of Object.entries(course)) {
-    output.push({ label: key, value: value });
-  }
   const settings = useSettingsContext();
 
 

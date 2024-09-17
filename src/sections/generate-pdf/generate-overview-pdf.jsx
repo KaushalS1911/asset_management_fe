@@ -95,17 +95,17 @@ const GenerateOverviewPdf = ({ orientation, heading, allData, configs, SubHeadin
   const getFormattedValue = (hed, row, fieldMapping) => {
     switch (hed.hed) {
         case 'Warranty start':
-        return fDate(row.warranty_start_date) || '-';
+        return fDate(row?.warranty_start_date) || '-';
         case 'Warranty end':
-        return fDate(row.warranty_end_date) || '-';
+        return fDate(row?.warranty_end_date) || '-';
         case 'Start Date':
-        return fDate(row.start_date) || '-';
+        return fDate(row?.start_date) || '-';
         case 'End Date':
-        return fDate(row.end_date) || '-';
+        return fDate(row?.end_date) || '-';
         case 'Asset Name':
-        return row.asset.asset_name;
+        return row?.asset?.asset_name;
         case 'Asset Type':
-        return row.asset.asset_type;
+        return row?.asset?.asset_type;
       default:
         return getNestedValue(row, fieldMapping[hed.hed]) || '-';
     }

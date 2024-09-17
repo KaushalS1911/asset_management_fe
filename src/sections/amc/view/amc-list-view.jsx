@@ -239,9 +239,9 @@ export default function AMCListView() {
     const { value } = event.target;
     if (value.length > 7) {
       enqueueSnackbar('You can only select up to 7 options!', { variant: 'error' });
-      return;
-    }
+    }else {
     setField(value);
+    }
   };
   return (
     <>

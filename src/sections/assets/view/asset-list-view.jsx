@@ -255,12 +255,12 @@ export default function AssetsListView() {
   }), {});
   const assetField = ['Name', 'Type', 'Company', 'Location', 'Seller name', 'Seller Contact', 'Seller Company', 'Warranty start', 'Warranty end', 'Remark', 'Course'];
   const handleFilterField1 = (event) => {
-    const { value } = event.target;
-    if (value.length > 7) {
+    const { value } = event?.target;
+    if (value?.length > 7) {
       enqueueSnackbar('You can only select up to 7 options!', { variant: 'error' });
-      return;
-    }
+    }else {
     setField(value);
+    }
   };
 
   return (
@@ -377,7 +377,7 @@ export default function AssetsListView() {
                   },
                 }}
               >
-                {assetField.map((option) => (
+                {assetField?.map((option) => (
                   <MenuItem key={option} value={option}>
                     <Checkbox
                       disableRipple

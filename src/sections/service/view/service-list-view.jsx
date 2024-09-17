@@ -150,8 +150,8 @@ export default function ServiceListView() {
   function fetchStates() {
     service?.map((data) => {
       setType((item) => {
-        if (!item.includes(data.asset.asset_type)) {
-          return [...item, data.asset.asset_type];
+        if (!item.includes(data?.asset?.asset_type)) {
+          return [...item, data?.asset?.asset_type];
         } else {
           return item;
         }
@@ -260,9 +260,9 @@ export default function ServiceListView() {
     const { value } = event.target;
     if (value.length > 7) {
       enqueueSnackbar('You can only select up to 7 options!', { variant: 'error' });
-      return;
-    }
+    }else {
     setField(value);
+    }
   };
 
   return (

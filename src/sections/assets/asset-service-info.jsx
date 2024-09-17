@@ -3,7 +3,7 @@ import isEqual from 'lodash/isEqual';
 import {
   emptyRows,
   TableEmptyRows,
-  TableHeadCustom,
+  TableHeadCustom, TableNoData,
   TablePaginationCustom,
   TableSelectedAction,
   useTable,
@@ -135,6 +135,7 @@ function AssetServiceInfo({ id }) {
     },
     [handleFilters]
   );
+  const notFound = (!dataFiltered.length && canReset) || !dataFiltered.length;
   const dateError = isAfter(filters.startDate, filters.endDate);
   return (
     <>
@@ -259,7 +260,7 @@ function AssetServiceInfo({ id }) {
                     height={denseHeight}
                     emptyRows={emptyRows(table.page, table.rowsPerPage, dataFiltered.length)}
                   />
-                  {/*<TableNoData notFound={notFound} />*/}
+                  <TableNoData notFound={notFound} />
                 </TableBody>
               </Table>
             </Scrollbar>

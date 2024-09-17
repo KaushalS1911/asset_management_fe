@@ -82,16 +82,16 @@ export default function ServiceTableToolbar({
             value={filters.type}
             onChange={handleFilterGender}
             input={<OutlinedInput label='Type' />}
-            renderValue={(selected) => selected.map((value) => value).join(', ')}
+            renderValue={(selected) => selected?.map((value) => value).join(', ')}
             MenuProps={{
               PaperProps: {
                 sx: { maxHeight: 240 },
               },
             }}
           >
-            {type.map((option) => (
+            {type?.map((option) => (
               <MenuItem key={option} value={option}>
-                <Checkbox disableRipple size='small' checked={filters.type.includes(option)} />
+                <Checkbox disableRipple size='small' checked={filters?.type?.includes(option)} />
                 {option}
               </MenuItem>
             ))}

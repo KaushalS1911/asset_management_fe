@@ -98,14 +98,15 @@ export function AuthProvider({ children }) {
     };
     const URL = `${AUTH_API}/api/auth/login`;
      await axios.post(URL, data).then((res) =>{
-       const { data } = res.data;
+       const user = res.data.data;
        enqueueSnackbar("Login Successfully")
-       const { jwt, jwtRefresh } = data;
+       const { jwt, jwtRefresh } = user?.other_info;
        setSession(jwt, jwtRefresh);
        dispatch({
          type: 'LOGIN',
          payload: {
            user: {
+             ...user,
              jwt,
              jwtRefresh,
            },

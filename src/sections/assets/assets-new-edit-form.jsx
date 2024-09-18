@@ -53,6 +53,7 @@ import { useAuthContext } from '../../auth/hooks';
 import { useGetConfigs } from '../../api/config';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
+import Iconify from '../../components/iconify';
 
 // ----------------------------------------------------------------------
 
@@ -315,39 +316,79 @@ useEffect(() => {
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
             Title, short description, image...
+            {disable ? <Box mt={2} pr={2}> <img src={currentProduct?.image_url} alt='asset image' /> </Box> :
+           <Box mt={2} pr={2}>
+             <Controller
+               disabled={disable}
+               name='image_url'
+               control={control}
+               render={({ field, fieldState: { error } }) => (
+                 <Upload
+                   {...field}
+                   file={file}
+                   onDrop={handleDropSingleFile}
+                   onDelete={() => setFile(null)}
+                   error={!!error}
+                   helperText={
+                     (!!error) && (
+                       <FormHelperText error={!!error} sx={{ px: 2 }}>
+                         {error.message}
+                       </FormHelperText>
+                     )
+                   }
+                 />
+               )}
+             />
+           </Box>}
           </Typography>
         </Grid>
       )}
       <Grid xs={12} md={8}>
         <Card>
-          {!mdUp && <CardHeader title="Asset Details" />}
+          {!mdUp && <>
+            <Box sx={{display:"flex",justifyContent:'space-between',alignItems:'center'}}>
+              <CardHeader title="Asset Details" />
+              <Button variant='contained' sx={{py:"3px",mr:3}} onClick={handleDownload}><Iconify
+                icon='eva:cloud-download-fill'
+                sx={{ width: 24, height: 22, color: '#fff'}}
+              /></Button>
+            </Box>
+            {disable ? <Box mt={2} px={3}> <img src={currentProduct?.image_url} alt='asset image' /> </Box> :
+              <Box mt={2} px={3}>
+                <Controller
+                  disabled={disable}
+                  name='image_url'
+                  control={control}
+                  render={({ field, fieldState: { error } }) => (
+                    <Upload
+                      {...field}
+                      file={file}
+                      onDrop={handleDropSingleFile}
+                      onDelete={() => setFile(null)}
+                      error={!!error}
+                      helperText={
+                        (!!error) && (
+                          <FormHelperText error={!!error} sx={{ px: 2 }}>
+                            {error.message}
+                          </FormHelperText>
+                        )
+                      }
+                    />
+                  )}
+                />
+              </Box>}
+          </>
+           }
           <Stack spacing={3} sx={{ p: 3 }} >
             <Stack spacing={1.5}>
               <Box sx={{display:"flex",justifyContent:'space-between',alignItems:'center'}}>
                 <Typography variant="subtitle1">Assets Img</Typography>
-                {disable && <Button variant='contained' onClick={handleDownload}>Download Images</Button>}
+                {(disable && mdUp) && <Button variant='contained' sx={{py:"3px"}} onClick={handleDownload}><Iconify
+                  icon='eva:cloud-download-fill'
+                  sx={{ width: 24, height: 22, color: '#fff'}}
+                /></Button>}
               </Box>
-              {disable ? <img src={currentProduct?.image_url} alt='asset image' /> :<Controller
-                disabled={disable}
-                name='image_url'
-                control={control}
-                render={({ field, fieldState: { error } }) => (
-                  <Upload
-                    {...field}
-                    file={file}
-                    onDrop={handleDropSingleFile}
-                    onDelete={() => setFile(null)}
-                    error={!!error}
-                    helperText={
-                      (!!error) && (
-                        <FormHelperText error={!!error} sx={{ px: 2 }}>
-                          {error.message}
-                        </FormHelperText>
-                      )
-                    }
-                  />
-                )}
-              />}
+
 
             </Stack>
             <Box  columnGap={2}
@@ -496,7 +537,7 @@ useEffect(() => {
                 )}
               />
             <RHFTextField disabled={disable} name="person_name" label="Person Name" />
-              <Stack spacing={1}>
+              <Stack >
                 <Stack spacing={1}>
                   <Typography variant="subtitle2">Warranty Information</Typography>
                   <Controller disabled={disable}
@@ -516,9 +557,9 @@ useEffect(() => {
                   />
                 </Stack>
               </Stack>
+              <RHFTextField disabled={disable} name="remark" multiline rows={3} label="Remark" />
             </Box>
 
-            <RHFTextField disabled={disable} name="remark" multiline rows={4} label="Remark" />
           </Stack>
         </Card>
       </Grid>
@@ -535,35 +576,62 @@ useEffect(() => {
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
             Upload the invoice or other documents...
           </Typography>
+          {disable ? <Box mt={2} pr={2}> <img src={currentProduct?.invoice_url} alt='asset image' /> </Box> :
+          <Box mt={2} pr={2}>
+            <Controller disabled={disable}
+                        name="invoice_url"
+                        control={control}
+                        render={({ field, fieldState: { error } }) => (
+                          <Upload
+                            {...field}
+                            file={file1}
+                            onDrop={handleDropSingleFile1}
+                            onDelete={() => setFile1(null)}
+                            error={!!error}
+                            helperText={
+                              (!!error) && (
+                                <FormHelperText error={!!error} sx={{ px: 2 }}>
+                                  {error.message}
+                                </FormHelperText>
+                              )
+                            }
+                          />
+                        )}
+            />
+          </Box>}
         </Grid>
       )}
       <Grid xs={12} md={8}>
         <Card>
-          {!mdUp && <CardHeader title="Billing Details" />}
+          {!mdUp && <>
+            <CardHeader title="Billing Details" />
+            {disable ? <Box mt={2} px={3}> <img src={currentProduct?.invoice_url} alt='asset image' /> </Box> :
+              <Box mt={2} px={3}>
+                <Controller disabled={disable}
+                            name="invoice_url"
+                            control={control}
+                            render={({ field, fieldState: { error } }) => (
+                              <Upload
+                                {...field}
+                                file={file1}
+                                onDrop={handleDropSingleFile1}
+                                onDelete={() => setFile1(null)}
+                                error={!!error}
+                                helperText={
+                                  (!!error) && (
+                                    <FormHelperText error={!!error} sx={{ px: 2 }}>
+                                      {error.message}
+                                    </FormHelperText>
+                                  )
+                                }
+                              />
+                            )}
+                />
+              </Box>}
+          </>}
           <Stack spacing={3} sx={{ p: 3 }}>
             <Stack spacing={1.5}>
               <Typography variant="subtitle1">Upload Invoice</Typography>
-              {disable ? <img src={currentProduct?.invoice_url} alt='asset image' /> :  <Controller disabled={disable}
-                name="invoice_url"
-                control={control}
-                render={({ field, fieldState: { error } }) => (
-                  <Upload
-                    {...field}
-                    file={file1}
-                    onDrop={handleDropSingleFile1}
-                    onDelete={() => setFile1(null)}
-                    error={!!error}
-                    helperText={
-                      (!!error) && (
-                        <FormHelperText error={!!error} sx={{ px: 2 }}>
-                          {error.message}
-                        </FormHelperText>
-                      )
-                    }
-                  />
-                )}
-              />
-                }
               {/*<Upload*/}
               {/*  name="invoice_url"*/}
               {/*  file={file1}*/}

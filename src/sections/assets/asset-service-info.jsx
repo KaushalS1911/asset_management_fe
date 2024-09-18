@@ -96,8 +96,8 @@ function AssetServiceInfo({ id }) {
   function fetchStates() {
     dataFiltered?.map((data) => {
       setType((item) => {
-        if (!item.includes(data.asset_type)) {
-          return [...item, data.asset_type];
+        if (!item.includes(data.asset.asset_type)) {
+          return [...item, data.asset.asset_type];
         } else {
           return item;
         }
@@ -179,6 +179,7 @@ function AssetServiceInfo({ id }) {
                      filters={filters}
                      onFilters={handleFilters}
                      dateError={dateError}
+                     type={type}
                  />
           {canReset && (
             <ServiceTableFiltersResult

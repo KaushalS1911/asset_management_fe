@@ -34,7 +34,8 @@ export default function AMCNewEditForm({ expensesId, singleService }) {
   const [assetName, setAssetName] = useState([]);
   const [open, setOpen] = useState(false);
   const { user } = useAuthContext();
-  const [codes, setAssetsCode] = useState([]);
+  const [codes, setAssetsCode] = useState(singleService.assets || []);
+  console.log(codes,"rrrrrrrrrrrrr");
   // const, setTaskData] = useState([]);
   useEffect(() => {
     if (assets && assets.length > 0) {
@@ -50,7 +51,10 @@ export default function AMCNewEditForm({ expensesId, singleService }) {
   const NewBlogSchema = Yup.object().shape({
     remark: Yup.string().required('Remark is required'),
     company_name: Yup.string().required('Sended by is required'),
-    cost: Yup.string().required('Cost person is required'),
+    cost: Yup.number()
+      .typeError('Please enter a valid number')
+      .required('Cost is required')
+      .positive('Cost must be a positive number'),
     company_contact: Yup.string().required('Person contact is required').min(10).max(10),
     start_date: Yup.mixed().nullable().required('Start date is required'),
     end_date: Yup.mixed().nullable().required('End date is required'),
@@ -61,7 +65,7 @@ export default function AMCNewEditForm({ expensesId, singleService }) {
     defaultValues: {
       remark: '',
       company_name: '',
-      cost: '',
+      cost: null,
       company_contact: '',
       start_date: new Date(),
       end_date: null,
@@ -85,7 +89,7 @@ export default function AMCNewEditForm({ expensesId, singleService }) {
           start_date: new Date(singleService?.start_date),
           end_date: new Date(singleService?.end_date),
         });
-        setAssetsCode([singleService?.asset?._id]);
+        setAssetsCode(singleService?.assets);
       }
     } catch (error) {
       console.error('Failed to fetch expense:', error);
@@ -95,13 +99,12 @@ export default function AMCNewEditForm({ expensesId, singleService }) {
   useEffect(() => {
     fetchExpenseById();
   }, [singleService, reset, assetName]);
-
   const onSubmit = handleSubmit(async (data) => {
-    const a = codes.map((item) => ({
+    const a = {
       ...data,
-      asset: item,
-    }));
+      assets: codes,company_id:user?._id };
     try {
+      console.log(a);
       setLoading(true);
       if (expensesId) {
         axios.put(`${ASSETS_API_URL}/${user._id}/contract/${expensesId}`, a).then((res) => {
@@ -243,7 +246,7 @@ export default function AMCNewEditForm({ expensesId, singleService }) {
           </Stack>
         </Card>
         <Stack sx={{ my: '30px', alignItems: 'flex-end' }}>
-          <Button type='submit' variant='contained' disabled={codes.length == 0}>
+          <Button type='submit' variant='contained' disabled={codes?.length == 0}>
             Submit
           </Button>
         </Stack>
@@ -258,7 +261,7 @@ export default function AMCNewEditForm({ expensesId, singleService }) {
           {renderDetails}
         </Grid>
       </FormProvider>}
-      <AmcModel open={open} setOpen={setOpen} setAssetsCode={setAssetsCode} codes={codes} />
+      <AmcModel open={open} setOpen={setOpen} setAssetsCode={setAssetsCode} codes={codes} singleService={singleService}/>
     </>
   );
 };

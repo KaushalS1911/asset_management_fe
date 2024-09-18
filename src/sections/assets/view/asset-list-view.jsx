@@ -89,7 +89,7 @@ const TABLE_HEAD = [
   { id: 'enrollment_no', label: '#' },
   { id: 'name', label: 'Asset' },
   { id: 'person_name', label: 'Assign to' },
-  { id: 'contact', label: 'Code' },
+  { id: 'code', label: 'Code' },
   { id: 'course', label: 'Type' },
   { id: 'joining_date', label: 'Location' },
   { id: 'status', label: 'Seller name' },

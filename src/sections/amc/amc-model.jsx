@@ -65,7 +65,7 @@ const TABLE_HEAD = [
   { id: 'status', label: 'Seller name' },
   { id: 'status', label: 'Purchase Date' },
 ];
-function AmcModel({open, onClose,setOpen,setAssetsCode,codes}) {
+function AmcModel({open, onClose,setOpen,setAssetsCode,codes,singleService}) {
   const { enqueueSnackbar } = useSnackbar();
 
   const confirm = useBoolean();
@@ -160,8 +160,10 @@ function AmcModel({open, onClose,setOpen,setAssetsCode,codes}) {
   const notFound = (!dataFiltered.length && canReset) || !dataFiltered.length;
 
   useEffect(() => {
-    table.onSelectRow(codes[0])
-  },[codes,dataFiltered,tableData])
+    if(singleService && singleService.assets){
+      singleService.assets.map((item) => table.onSelectRow(item))
+    }
+  },[singleService])
   return (
     <>
       <Dialog

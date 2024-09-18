@@ -103,8 +103,7 @@ export default function AssetsTableRow({ row, selected, onEditRow, onView, onDel
         </MenuItem>
         <MenuItem
           onClick={() => {
-            onDeleteRow()
-            confirm.onFalse();
+            confirm.onTrue();
             popover.onClose();
           }}
           sx={{ color: 'error.main' }}
@@ -117,10 +116,17 @@ export default function AssetsTableRow({ row, selected, onEditRow, onView, onDel
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
-        title="Delete"
-        content="Are you sure want to delete?"
+        title="Delete Asset"
+        content="Are you sure want to delete selected asset?"
         action={
-          <Button variant="contained" color="error" onClick={onDeleteRow}>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => {
+              onDeleteRow();
+              confirm.onFalse();
+            }}
+          >
             Delete
           </Button>
         }

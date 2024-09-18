@@ -15,20 +15,24 @@ export default function AssetNameCreatepage() {
   const { enqueueSnackbar } = useSnackbar();
 
   const handleClick = () => {
-    const URL = `${ASSETS_API_URL}/${user?._id}/config/${config?._id}`;
-    const payload = { ...config, asset_name: [...config.asset_name, inputVal] };
-    axios
-      .put(URL, payload)
-      .then((res) => {
-        if (res.status === 200) {
-          setInputVal('');
-          enqueueSnackbar('Asset Name Add Successfully', {
-            variant: 'success',
-          });
-          mutate();
-        }
-      })
-      .catch((err) => console.log(err));
+    if(inputVal == ''){
+      enqueueSnackbar('Please enter value !!',{variant:'error'})
+    }else {
+      const URL = `${ASSETS_API_URL}/${user?._id}/config/${config?._id}`;
+      const payload = { ...config, asset_name: [...config.asset_name, inputVal] };
+      axios
+        .put(URL, payload)
+        .then((res) => {
+          if (res.status === 200) {
+            setInputVal('');
+            enqueueSnackbar('Asset Name Add Successfully', {
+              variant: 'success',
+            });
+            mutate();
+          }
+        })
+        .catch((err) => console.log(err));
+    }
   };
 
   const handleDelete = (item) => {

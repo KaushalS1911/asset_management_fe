@@ -98,7 +98,7 @@ export default function ServiceListView() {
   useEffect(() => {
     if (service) {
       setTableData(service);
-      fetchStates()
+      fetchTypes()
     }
   }, [service]);
 
@@ -147,7 +147,7 @@ export default function ServiceListView() {
     comparator: getComparator(table.order, table.orderBy),
     filters,
   });
-  function fetchStates() {
+  function fetchTypes() {
     service?.map((data) => {
       setType((item) => {
         if (!item.includes(data?.asset?.asset_type)) {

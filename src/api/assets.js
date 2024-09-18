@@ -19,7 +19,6 @@ export function useGetAssete() {
       assetsLoading: isLoading,
       assetsError: error,
       assetsValidating: isValidating,
-      assetsEmpty: !isLoading ,
       assetsLength: data?.length ,
       mutate
     }),
@@ -40,7 +39,7 @@ export function useGetSingleAssete(id) {
       singleAssetsLoading: isLoading,
       singleAssetsError: error,
       singleAssetsValidating: isValidating,
-      singleAssetsEmpty: !isLoading ,
+      singleAssetsLength: data?.length ,
       mutate
     }),
     [data, error, isLoading, isValidating]

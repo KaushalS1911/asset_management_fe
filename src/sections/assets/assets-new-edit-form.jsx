@@ -45,12 +45,14 @@ import { Upload } from '../../components/upload';
 import scrollbar from '../../components/scrollbar';
 import Scrollbar from '../../components/scrollbar';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { FormHelperText } from '@mui/material';
+import { Button, FormHelperText } from '@mui/material';
 import axios from 'axios';
 import {LoadingScreen} from "../../components/loading-screen";
 import { ASSETS_API_URL } from '../../config-global';
 import { useAuthContext } from '../../auth/hooks';
 import { useGetConfigs } from '../../api/config';
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
 
 // ----------------------------------------------------------------------
 
@@ -108,6 +110,35 @@ useEffect(() => {
     in_warranty: Yup.string().required('Warranty is required'),
     purchase_date: Yup.mixed().nullable().required('Expired date is required'),
   });
+  const images = [
+    {
+      url: currentProduct?.image_url || null,
+      name: 'asset.jpg',
+    },
+    {
+      url: currentProduct?.invoice_url || null,
+      name: 'invoice.jpg',
+    },
+
+  ];
+  const handleDownload = async () => {
+    const zip = new JSZip();
+    const imageFolder = zip.folder('images');
+
+    // Loop over the image URLs and add them to the zip
+    await Promise.all(
+      images.map(async (item, index) => {
+        const response = await fetch(item?.url);
+        const blob = await response.blob();
+        imageFolder.file(`image-${index + 1}.jpg`, blob);
+      })
+    );
+
+    // Generate the zip file and trigger the download
+    zip.generateAsync({ type: 'blob' }).then((content) => {
+      saveAs(content, 'images.zip');
+    });
+  }
   const defaultValues = useMemo(
     () => ({
       image_url: currentProduct?.image_url || null,
@@ -292,10 +323,13 @@ useEffect(() => {
           {!mdUp && <CardHeader title="Asset Details" />}
           <Stack spacing={3} sx={{ p: 3 }} >
             <Stack spacing={1.5}>
-              <Typography variant="subtitle1">Assets Img</Typography>
-              <Controller
+              <Box sx={{display:"flex",justifyContent:'space-between',alignItems:'center'}}>
+                <Typography variant="subtitle1">Assets Img</Typography>
+                {disable && <Button variant='contained' onClick={handleDownload}>Download Images</Button>}
+              </Box>
+              {disable ? <img src={currentProduct?.image_url} alt='asset image' /> :<Controller
                 disabled={disable}
-                name="image_url"
+                name='image_url'
                 control={control}
                 render={({ field, fieldState: { error } }) => (
                   <Upload
@@ -313,7 +347,7 @@ useEffect(() => {
                     }
                   />
                 )}
-              />
+              />}
 
             </Stack>
             <Box  columnGap={2}
@@ -325,13 +359,14 @@ useEffect(() => {
                   }}>
 
             {/*<RHFTextField disabled={disable} name="asset_name" label="Asset Name" />*/}
-              <Controller
-                name="asset_name"
-                control={control}
-                defaultValue=""
-                render={({ field }) => (
+            {/*  <Controller*/}
+            {/*    name="asset_name"*/}
+            {/*    control={control}*/}
+            {/*    defaultValue=""*/}
+            {/*    render={({ field }) => (*/}
+                    {/*{...field}*/}
                   <RHFAutocomplete
-                    {...field}
+                name="asset_name"
                     disabled={disable}
                     label="Asset Name"
                     fullWidth
@@ -344,8 +379,8 @@ useEffect(() => {
                     )}
 
                   />
-                )}
-              />
+              {/*  )}*/}
+              {/*/>*/}
               <Controller
                 name="asset_type"
                 control={control}
@@ -395,13 +430,13 @@ useEffect(() => {
               {/*/>*/}
             <RHFTextField disabled={disable} name="asset_code" label="Asset Code" />
             {/*<RHFTextField disabled={disable} name="company" label="Company" />*/}
-              <Controller
-                name="company"
-                control={control}
-                defaultValue=""
-                render={({ field }) => (
+            {/*  <Controller*/}
+            {/*    control={control}*/}
+            {/*    defaultValue=""*/}
+            {/*    render={({ field }) => (*/}
+            {/*        {...field}*/}
                   <RHFAutocomplete
-                    {...field}
+                    name="company"
                     disabled={disable}
                     label="Company"
                     fullWidth
@@ -414,8 +449,8 @@ useEffect(() => {
                     )}
 
                   />
-                )}
-              />
+              {/*  )}*/}
+              {/*/>*/}
               <Stack spacing={1.5}>
                 <Controller disabled={disable}
                   name="purchase_date"
@@ -508,7 +543,7 @@ useEffect(() => {
           <Stack spacing={3} sx={{ p: 3 }}>
             <Stack spacing={1.5}>
               <Typography variant="subtitle1">Upload Invoice</Typography>
-              <Controller disabled={disable}
+              {disable ? <img src={currentProduct?.invoice_url} alt='asset image' /> :  <Controller disabled={disable}
                 name="invoice_url"
                 control={control}
                 render={({ field, fieldState: { error } }) => (
@@ -528,6 +563,7 @@ useEffect(() => {
                   />
                 )}
               />
+                }
               {/*<Upload*/}
               {/*  name="invoice_url"*/}
               {/*  file={file1}*/}
@@ -589,7 +625,7 @@ useEffect(() => {
                       )}
                     />
                   </Stack>)}
-              {selectedAssetType === 'Vehicle' && (
+              {selectedAssetType === 'Vehicles' && (
                               <Stack spacing={1.5}>
                     <Controller
                       disabled={disable}
@@ -612,7 +648,7 @@ useEffect(() => {
                     />
                   </Stack>
               )}
-              {selectedAssetType === 'Vehicle' && (   <Stack spacing={1.5}>
+              {selectedAssetType === 'Vehicles' && (   <Stack spacing={1.5}>
                     <Controller
                       name="vehicle_insurance_end_date"
                       control={control}

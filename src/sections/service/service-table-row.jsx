@@ -83,16 +83,6 @@ export default function ServiceTableRow({
         arrow="right-top"
         sx={{ width: 140 }}
       >
-        <MenuItem
-          onClick={() => {
-            confirm.onTrue();
-            popover.onClose();
-          }}
-          sx={{ color: 'error.main' }}
-        >
-          <Iconify icon="solar:trash-bin-trash-bold" />
-          Delete
-        </MenuItem>
 
         <MenuItem
           onClick={() => {
@@ -103,12 +93,22 @@ export default function ServiceTableRow({
           <Iconify icon="solar:pen-bold" />
           Edit
         </MenuItem>
+        <MenuItem
+          onClick={() => {
+            confirm.onTrue();
+            popover.onClose();
+          }}
+          sx={{ color: 'error.main' }}
+        >
+          <Iconify icon="solar:trash-bin-trash-bold" />
+          Delete
+        </MenuItem>
       </CustomPopover>
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
-        title="Delete Task"
-        content="Are you sure want to delete selected task?"
+        title="Delete Service"
+        content="Are you sure want to delete selected service?"
         action={
           <Button
             variant="contained"

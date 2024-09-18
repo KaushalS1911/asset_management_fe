@@ -15,6 +15,9 @@ export default function AssetTypeCreatepage() {
   const { enqueueSnackbar } = useSnackbar();
 
   const handleClick = () => {
+    if(inputVal == ''){
+      enqueueSnackbar('Please enter value !!',{variant:'error'})
+    }else{
     const URL = `${ASSETS_API_URL}/${user?._id}/config/${config?._id}`;
     const payload = { ...config, asset_types: [...config.asset_types, inputVal] };
     axios
@@ -29,6 +32,7 @@ export default function AssetTypeCreatepage() {
         }
       })
       .catch((err) => console.log(err));
+    }
   };
 
   const handleDelete = (item) => {

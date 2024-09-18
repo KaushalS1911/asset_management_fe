@@ -110,14 +110,13 @@ export default function AssetsListView() {
 
   const settings = useSettingsContext();
 
-    const { assets,assetsLoading,mutate } = useGetAssete();
+    const { assets,mutate,assetsLoading } = useGetAssete();
 
   const [tableData, setTableData] = useState([]);
 
   const [filters, setFilters] = useState(defaultFilters);
   const [field, setField] = useState([]);
   const [selectedRowIds, setSelectedRowIds] = useState([]);
-
   const [type,setType] = useState([])
   const [location,setLocation] = useState([])
 
@@ -125,11 +124,10 @@ export default function AssetsListView() {
     fetchStates();
   }, [tableData]);
   useEffect(() => {
-    if (assets.length) {
+    if (assets) {
       setTableData(assets);
     }
   }, [assets]);
-
   const dataFiltered = applyFilter({
     inputData: tableData,
     filters,
@@ -169,8 +167,23 @@ export default function AssetsListView() {
   const handleResetFilters = useCallback(() => {
     setFilters(defaultFilters);
   }, []);
-
-
+  const handleDeleteRow = useCallback(
+    async (id) => {
+      await axios
+        .delete(`${ASSETS_API_URL}/${user._id}/asset/${id}`)
+        .then((res) => {
+          if (res) {
+            enqueueSnackbar(res?.data?.message);
+            router.push(paths.dashboard.assets.list)
+           mutate()
+          }
+        })
+        .catch((err) => {
+          enqueueSnackbar('Something went wrong',{variant:'error'});
+        })
+    },
+    [enqueueSnackbar, mutate,router,assets]
+  );
 
   const handleDeleteRows = useCallback((id) => {
     // const deleteRows = tableData.filter((row) => !selectedRowIds.includes(row.id));
@@ -526,7 +539,7 @@ export default function AssetsListView() {
                         index={index}
                         selected={table.selected.includes(row._id)}
                         // onSelectRow={() => table.onSelectRow(row._id)}
-                        onDeleteRow={() => handleDeleteRows(row._id)}
+                        onDeleteRow={() => handleDeleteRow(row._id)}
                         onView={() => handleViewRow(row._id)}
                         onEditRow={() => handleEditRow(row._id)}
                       />

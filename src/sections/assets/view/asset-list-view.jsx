@@ -234,16 +234,22 @@ export default function AssetsListView() {
   };
   const handleExportExcel = () => {
     let data = dataFiltered.map((item) => ({
-      'Name': item?.asset_name,
-      'Type': item?.asset_type,
+      'AssetName': item?.asset_name,
+      'AssetType': item?.asset_type,
+      'AssetCode': item?.asset_code,
       'Company': item?.company,
+      'PurchaseDate':fDate(item?.purchase_date) ,
+      'New/Refurbish': item?.new_refurbish,
       'Location': item?.location,
-      'Seller name': item?.seller_name,
-      'Seller Contact': item?.seller_contact,
-      'Seller Company': item?.seller_company,
+      'PersonName': item?.person_name,
+      'WarrantyInforamation': item?.in_warranty,
       'Warranty start':fDate(item?.warranty_start_date) ,
       'Warranty end':fDate(item?.warranty_end_date),
       'Remark': item?.remark,
+      'SellerName': item?.seller_name,
+      'SellerCompany': item?.seller_company,
+      'SellerContact': item?.seller_contact,
+      'InvoiceNo': item?.invoice_no,
     }));
     if (field.length) {
       data = data.map((item) => {

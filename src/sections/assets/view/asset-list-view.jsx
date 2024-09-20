@@ -1,5 +1,5 @@
 import isEqual from 'lodash/isEqual';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import * as XLSX from 'xlsx';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -59,6 +59,8 @@ import { useAuthContext } from '../../../auth/hooks';
 import { Checkbox, CircularProgress, FormControl, InputLabel, MenuItem, OutlinedInput, Select } from '@mui/material';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import GenerateOverviewPDF from '../../generate-pdf/generate-overview-pdf';
+import Swal from 'sweetalert2';
+import LoadingButton from '@mui/lab/LoadingButton';
 // import {
 //   RenderCellStock,
 //   RenderCellPrice,
@@ -107,13 +109,13 @@ export default function AssetsListView() {
   const confirmRows = useBoolean();
   const table = useTable();
   const router = useRouter();
-
+  const fileInputRef = useRef(null);
   const settings = useSettingsContext();
 
     const { assets,mutate,assetsLoading } = useGetAssete();
 
   const [tableData, setTableData] = useState([]);
-
+const [bulkLoad,setBulkLoad] = useState(false)
   const [filters, setFilters] = useState(defaultFilters);
   const [field, setField] = useState([]);
   const [selectedRowIds, setSelectedRowIds] = useState([]);
@@ -282,7 +284,60 @@ export default function AssetsListView() {
     setField(value);
     }
   };
+  const handleButtonClick = () => {
+    fileInputRef.current.click();
+  };
+  const handleFileChange = async (event) => {
+    setBulkLoad(true)
+    const file = event.target.files[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append('asset-file', file);
+      axios.post(`${ASSETS_API_URL}/${user._id}/asset/bulk-import`, formData)
+        .then((res) => {
+          console.log(res);
+          const { successCount, failureCount } = res.data.data;
+          let alertText = '';
+          let alertTitle = '';
+          let alertIcon = '';
 
+          if (failureCount == 0) {
+            alertText = `${successCount} asset added successfully.`;
+            alertTitle = 'Success!';
+            alertIcon = 'success';
+          }
+          if (successCount !== 0 && failureCount !== 0) {
+            alertText = `${successCount} asset added successfully. ${failureCount} failed.`;
+            alertTitle = 'Warning!';
+            alertIcon = 'warning';
+          }
+          if (successCount == 0) {
+            alertText = `Errors occurred. ${failureCount} failed.`;
+            alertTitle = 'Failed!';
+            alertIcon = 'error';
+          }
+
+          Swal.fire({
+            title: alertTitle,
+            text: alertText,
+            icon: alertIcon,
+            didOpen: () => document.querySelector('.swal2-container').style.zIndex = '9999',
+          });
+          setBulkLoad(false)
+        })
+        .catch(() => {
+          Swal.fire({
+            title: 'Failed!',
+            text: 'Bulk import failed.',
+            icon: 'error',
+            didOpen: () => document.querySelector('.swal2-container').style.zIndex = '9999',
+          });
+          setBulkLoad(false)
+        });
+
+      fileInputRef.current.value = '';
+    }
+  };
   return (
     <>
       {assetsLoading ? <LoadingScreen /> : <Container maxWidth={settings.themeStretch ? false : 'lg'}>
@@ -293,6 +348,26 @@ export default function AssetsListView() {
             { name: 'Asset List', href: paths.dashboard.assets.list },
           ]}
           action={
+            <>
+
+              <LoadingButton
+                color="inherit"
+                type="submit"
+                variant="contained"
+                loading={bulkLoad}
+                startIcon={<Iconify icon='mingcute:add-line' />}
+                onClick={handleButtonClick}
+                sx={{ marginRight: '20px' }}
+              >
+
+              Add Bulk Asset
+              <input
+                type='file'
+                ref={fileInputRef}
+                style={{ display: 'none' }}
+                onChange={handleFileChange}
+              />
+              </LoadingButton>
             <Button
               component={RouterLink}
               href={paths.dashboard.assets.new}
@@ -301,6 +376,7 @@ export default function AssetsListView() {
             >
               New Asset
             </Button>
+            </>
           }
           sx={{
             mb: { xs: 3, md: 5 },

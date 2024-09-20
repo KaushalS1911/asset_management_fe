@@ -295,7 +295,6 @@ const [bulkLoad,setBulkLoad] = useState(false)
       formData.append('asset-file', file);
       axios.post(`${ASSETS_API_URL}/${user._id}/asset/bulk-import`, formData)
         .then((res) => {
-          console.log(res);
           const { successCount, failureCount } = res.data.data;
           let alertText = '';
           let alertTitle = '';
@@ -324,11 +323,13 @@ const [bulkLoad,setBulkLoad] = useState(false)
             didOpen: () => document.querySelector('.swal2-container').style.zIndex = '9999',
           });
           setBulkLoad(false)
+          mutate()
         })
-        .catch(() => {
+        .catch((err) => {
+          console.log(err);
           Swal.fire({
             title: 'Failed!',
-            text: 'Bulk import failed.',
+            text: err?.response?.data?.error || 'Bulk import failed.',
             icon: 'error',
             didOpen: () => document.querySelector('.swal2-container').style.zIndex = '9999',
           });

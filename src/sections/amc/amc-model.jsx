@@ -158,12 +158,11 @@ function AmcModel({open, onClose,setOpen,setAssetsCode,codes,singleService}) {
   );
   const dateError = isAfter(filters.startDate, filters.endDate);
   const notFound = (!dataFiltered.length && canReset) || !dataFiltered.length;
-
   useEffect(() => {
-    if(singleService && singleService.assets){
-      singleService.assets.map((item) => table.onSelectRow(item))
+    if (singleService && singleService.assets) {
+      table.onSelectAllRows(true, singleService.assets);
     }
-  },[singleService])
+  }, [singleService]);
   return (
     <>
       <Dialog

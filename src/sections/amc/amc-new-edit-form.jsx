@@ -34,8 +34,7 @@ export default function AMCNewEditForm({ expensesId, singleService }) {
   const [assetName, setAssetName] = useState([]);
   const [open, setOpen] = useState(false);
   const { user } = useAuthContext();
-  const [codes, setAssetsCode] = useState(singleService.assets || []);
-  console.log(codes,"rrrrrrrrrrrrr");
+  const [codes, setAssetsCode] = useState(singleService?.assets || []);
   // const, setTaskData] = useState([]);
   useEffect(() => {
     if (assets && assets.length > 0) {
@@ -104,7 +103,6 @@ export default function AMCNewEditForm({ expensesId, singleService }) {
       ...data,
       assets: codes,company_id:user?._id };
     try {
-      console.log(a);
       setLoading(true);
       if (expensesId) {
         axios.put(`${ASSETS_API_URL}/${user._id}/contract/${expensesId}`, a).then((res) => {
